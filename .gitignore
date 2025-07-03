@@ -1,0 +1,46 @@
+# === GLOBAL ===
+.env
+*.log
+*.tmp
+*.bak
+*.swp
+.DS_Store
+Thumbs.db
+
+# === BACKEND (ASP.NET Core) ===
+backend/bin/
+backend/obj/
+backend/.vs/
+backend/.vscode/
+backend/*.user
+backend/*.Backup*
+backend/*.http
+
+# user secrets and sensitive config
+backend/appsettings.Development.json
+backend/appsettings.Local.json
+backend/appsettings.*.json
+
+# === FRONTEND (Angular) ===
+frontend/node_modules/
+frontend/.angular/
+frontend/.vscode/
+frontend/.idea/
+frontend/dist/
+frontend/.env
+frontend/.env.*
+
+# Angular build output
+frontend/browser/
+frontend/tmp/
+frontend/package-lock.json
+
+# === DOCKER/VOLUMES ===
+pg_data/
+
+# === OS/EDITOR FILES ===
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.orig

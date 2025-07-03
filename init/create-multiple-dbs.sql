@@ -1,0 +1,2 @@
+CREATE DATABASE internal;
+CREATE DATABASE external;

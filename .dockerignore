@@ -1,0 +1,15 @@
+**/node_modules
+**/bin
+**/obj
+**/.angular
+**/.vs
+**/.vscode
+**/.git
+**/.DS_Store
+**/dist
+**/frontend/dist
+**/frontend/.angular
+**/*.log
+*.user
+*.suo
+*.tmp
