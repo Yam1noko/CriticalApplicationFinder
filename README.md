@@ -1,4 +1,4 @@
-# SummerProject
+# CriticalApplicationFinder
 
 Fullstack-приложение на ASP.NET Core + Angular + PostgreSQL, завернутое в Docker.
 
