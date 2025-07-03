@@ -2,7 +2,9 @@ version: '3.9'
 
 services:
   postgres:
-    image: postgres:15
+    build:
+      context: .
+      dockerfile: init/pg.Dockerfile
     container_name: pg-multidb
     ports:
       - "5432:5432"
