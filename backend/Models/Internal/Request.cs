@@ -9,4 +9,5 @@ public class Request
     public string ClientName { get; set; } = "";
     public string ShortDescr { get; set; } = "";
     public string DescriptionRtf4096 { get; set; } = "";
+    public bool isCritical { get; set; } = false;
 }

@@ -4,9 +4,6 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-
 builder.Services.AddDbContext<InternalDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("InternalDb")));
 
@@ -28,10 +25,10 @@ app.UseSwaggerUI();
 using (var scope = app.Services.CreateScope())
 {
     var internalDb = scope.ServiceProvider.GetRequiredService<InternalDbContext>();
-    internalDb.Database.EnsureCreated();
+    internalDb.Database.Migrate();
 
     var externalDb = scope.ServiceProvider.GetRequiredService<ExternalDbContext>();
-    externalDb.Database.EnsureCreated();
+    externalDb.Database.Migrate();
 }
 
 app.Urls.Add("http://0.0.0.0:5000");

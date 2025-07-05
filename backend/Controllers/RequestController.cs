@@ -16,6 +16,9 @@ public class RequestController : ControllerBase
     public async Task<IActionResult> GetInRange([FromQuery] DateTime from, [FromQuery] DateTime to)
     {
         var list = await _repo.GetByDateRange(from, to);
-        return Ok(list);
+        return Ok(list) ;
     }
 }
+
+
+

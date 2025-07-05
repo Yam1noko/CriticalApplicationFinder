@@ -20,4 +20,10 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="BackgroundServices\" />
+    <Folder Include="DataTransferObject\" />
+    <Folder Include="Services\" />
+  </ItemGroup>
+
 </Project>
