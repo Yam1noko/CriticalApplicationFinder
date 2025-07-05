@@ -11,6 +11,7 @@ builder.Services.AddDbContext<ExternalDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("ExternalDb")));
 
 builder.Services.AddScoped<IRequestRepository, EFRequestRepository>();
+builder.Services.AddScoped<INotificationRepository, EFNotificationRepository>();
 
 builder.Services.AddCors();
 builder.Services.AddControllers();

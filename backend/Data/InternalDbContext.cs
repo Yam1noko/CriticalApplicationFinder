@@ -39,5 +39,13 @@ public class InternalDbContext : DbContext
             .HasForeignKey(r => r.Substring)
             .HasPrincipalKey(s => s.Substring)
             .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<NotificationEmail>()
+            .HasIndex(x => x.Id)
+            .IsUnique();
+
+        modelBuilder.Entity<NotificationTemplate>()
+            .HasIndex(x => x.Id)
+            .IsUnique();
     }
 }
