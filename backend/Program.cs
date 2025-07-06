@@ -1,6 +1,9 @@
 using backend.Data;
+using backend.Mapping;
 using backend.Repositories;
+using backend.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +14,14 @@ builder.Services.AddDbContext<ExternalDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("ExternalDb")));
 
 builder.Services.AddScoped<IRequestRepository, EFRequestRepository>();
+builder.Services.AddScoped<IExternalRequestRepository, EFExternalRequestRepository>();
+builder.Services.AddScoped<IRequestService, RequestService>();
+
+
+builder.Services.AddAutoMapper(cfg =>
+{
+    cfg.AddProfile<MappingProfile>();
+});
 
 builder.Services.AddCors();
 builder.Services.AddControllers();
