@@ -8,16 +8,17 @@ using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<InternalDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("InternalDb")));
+builder.Services.AddDbContext<InternalDbContext>(options => 
+    options.UseNpgsql(builder.Configuration.GetConnectionString("InternalDb"))
+);
 
 builder.Services.AddDbContext<ExternalDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("ExternalDb")));
 
 builder.Services.AddScoped<IRequestRepository, EFRequestRepository>();
+
 builder.Services.AddScoped<IExternalRequestRepository, EFExternalRequestRepository>();
 builder.Services.AddScoped<IRequestService, RequestService>();
-
 
 builder.Services.AddAutoMapper(cfg =>
 {
@@ -25,6 +26,13 @@ builder.Services.AddAutoMapper(cfg =>
 });
 
 builder.Services.AddHostedService<MonitoringService>();
+
+builder.Services.AddScoped<IRuleRepository, EFRuleRepository>();
+
+builder.Services.AddScoped<IRuleRepository, EFRuleRepository>();
+
+builder.Services.AddScoped<IRuleService, RuleService>();
+builder.Services.AddScoped<RuleEngine>();
 
 builder.Services.AddCors();
 builder.Services.AddControllers();
