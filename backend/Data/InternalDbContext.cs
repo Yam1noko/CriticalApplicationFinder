@@ -16,28 +16,18 @@ public class InternalDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<RuleFullName>()
-            .HasIndex(x => x.FullName)
-            .IsUnique();
-
-        modelBuilder.Entity<RuleSubstring>()
-            .HasIndex(x => x.Substring)
-            .IsUnique();
-
-        // RuleFullName.fullname → Rule.fullname
+        // Rule (1) -> RuleFullNames (Many)
         modelBuilder.Entity<Rule>()
-            .HasOne(r => r.RuleFullName)
-            .WithMany(f => f.Rules)
-            .HasForeignKey(r => r.FullName)
-            .HasPrincipalKey(f => f.FullName)
-            .OnDelete(DeleteBehavior.Restrict);
+            .HasMany(r => r.RuleFullNames)
+            .WithOne()
+            .HasForeignKey(f => f.RuleId)
+            .OnDelete(DeleteBehavior.Cascade);
 
-        // RuleSubstring.substring → Rule.substring
+        // Rule (1) -> RuleSubstrings (Many)
         modelBuilder.Entity<Rule>()
-            .HasOne(r => r.RuleSubstring)
-            .WithMany(s => s.Rules)
-            .HasForeignKey(r => r.Substring)
-            .HasPrincipalKey(s => s.Substring)
-            .OnDelete(DeleteBehavior.Restrict);
+            .HasMany(r => r.RuleSubstrings)
+            .WithOne()
+            .HasForeignKey(s => s.RuleId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

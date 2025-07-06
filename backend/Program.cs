@@ -7,13 +7,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddDbContext<InternalDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("InternalDb")));
+builder.Services.AddDbContext<InternalDbContext>(options => 
+    options.UseNpgsql(builder.Configuration.GetConnectionString("InternalDb"))
+);
 
 builder.Services.AddDbContext<ExternalDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("ExternalDb")));
 
 builder.Services.AddScoped<IRequestRepository, EFRequestRepository>();
+builder.Services.AddScoped<IRuleRepository, EFRuleRepository>();
 
 builder.Services.AddCors();
 builder.Services.AddControllers();

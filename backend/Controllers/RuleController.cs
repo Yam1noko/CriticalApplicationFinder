@@ -13,27 +13,43 @@ public class RuleController : ControllerBase
     }
 
     [HttpGet("rules")]
-    public async Task<IActionResult> GetRules() // done.
+    public async Task<IActionResult> GetRules()
     {
-        var rules = await _repo.GetAll();
-        return Ok(rules);
+        try {
+            return Ok(await _repo.GetAll());
+        }
+        catch (Exception ex) {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
     }
 
     [HttpPost("rules")]
-    public async Task<IActionResult> AddRule([FromBody] Rule rule) // done.
+    public async Task<IActionResult> AddRule([FromBody] Rule rule)
     {
         await _repo.Add(rule);
         return NoContent();
     }
 
-    [HttpPut("rules{id}")]
-    public async Task<IActionResult> UpdateRule([FromRoute] string id, [FromBody] Rule rule) // done.
+    [HttpPut("rules/{id}")]
+    public async Task<IActionResult> UpdateRule([FromRoute] int id, [FromBody] Rule rule)
     {
-        await _repo.Update(rule);
-        return NoContent();
+        if (id != rule.Id)
+        {
+            return BadRequest("ID in route does not match ID in request body");
+        }
+
+        try
+        {
+            await _repo.Update(rule);
+            return NoContent();
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, "Internal server error");
+        }
     }
 
-    [HttpDelete("rules{id}")]
+    [HttpDelete("rules/{id}")]
     public async Task<IActionResult> DeleteRule([FromRoute] string id)
     {
         var rule = await _repo.GetById(Int32.Parse(id));
@@ -53,7 +69,7 @@ public class RuleController : ControllerBase
     }
 
     [HttpGet("substrings")]
-    public async Task<IActionResult> GetSubstrings()
+    public async Task<IActionResult> GetSubstrings() 
     {
         var substrings = await _repo.GetAllSubstrings();
         return Ok(substrings);
