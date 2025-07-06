@@ -22,7 +22,7 @@ public class RequestController : ControllerBase
         {
             return BadRequest("Invalid date range: 'from' must be earlier than 'to'.");
         }
-        var list = await _repo.GetByDateRange(from, to);
+        var list = await _service.GetRequestsInRange(from, to);
         return Ok(list) ;
     }
 

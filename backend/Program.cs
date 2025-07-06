@@ -1,3 +1,4 @@
+using backend.BackgroundServices;
 using backend.Data;
 using backend.Mapping;
 using backend.Repositories;
@@ -22,6 +23,8 @@ builder.Services.AddAutoMapper(cfg =>
 {
     cfg.AddProfile<MappingProfile>();
 });
+
+builder.Services.AddHostedService<MonitoringService>();
 
 builder.Services.AddCors();
 builder.Services.AddControllers();

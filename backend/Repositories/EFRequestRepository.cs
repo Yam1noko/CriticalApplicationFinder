@@ -31,6 +31,7 @@ namespace backend.Repositories
 
             return await _context.Requests
                 .Where(r => r.CreationDate >= from && r.CreationDate <= to)
+                .OrderByDescending(r => r.CreationDate)
                 .ToListAsync();
         }
 

@@ -2,7 +2,7 @@
 {
     using AutoMapper;
     using backend.DataTransferObject;
-    using backend.Models;
+
     using backend.Models.External;
     using backend.Models.Internal;
     using backend.Repositories;
@@ -28,9 +28,9 @@
             return requests.Select(r => new RequestDto
             {
                 Id = r.Id,
-                Title = r.Title,
                 CreationDate = r.CreationDate,
                 ClientName = r.ClientName,
+                ShortDescr = r.ShortDescr,
                 IsCritical = r.isCritical
             });
         }
@@ -49,6 +49,8 @@
                 if (!internalById.TryGetValue(externalReq.Id, out var internalReq))
                 {
                     var newInternal = _mapper.Map<Models.Internal.Request>(externalReq);
+                    //Вызываем кусок кода Германа с этим newInternal
+                    //Если критический, то вслед за Приколами Германа, мутим приколы Дениса
                     await _internalRepo.Add(newInternal);
                     hasChanges = true;
                 }
