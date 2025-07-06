@@ -1,6 +1,9 @@
 using backend.Data;
+using backend.Mapping;
 using backend.Repositories;
+using backend.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +15,12 @@ builder.Services.AddDbContext<ExternalDbContext>(options =>
 
 builder.Services.AddScoped<IRequestRepository, EFRequestRepository>();
 builder.Services.AddScoped<INotificationRepository, EFNotificationRepository>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
+
+builder.Services.AddAutoMapper(cfg =>
+{
+    cfg.AddProfile<MappingProfile>();
+});
 
 builder.Services.AddCors();
 builder.Services.AddControllers();
@@ -26,10 +35,10 @@ app.UseSwaggerUI();
 using (var scope = app.Services.CreateScope())
 {
     var internalDb = scope.ServiceProvider.GetRequiredService<InternalDbContext>();
-    internalDb.Database.Migrate();
+    internalDb.Database.EnsureCreated();
 
     var externalDb = scope.ServiceProvider.GetRequiredService<ExternalDbContext>();
-    externalDb.Database.Migrate();
+    externalDb.Database.EnsureCreated();
 }
 
 app.Urls.Add("http://0.0.0.0:5000");

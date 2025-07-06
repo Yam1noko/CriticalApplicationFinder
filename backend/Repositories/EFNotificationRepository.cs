@@ -66,8 +66,8 @@ public class EFNotificationRepository : INotificationRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task<bool> ExistTemplate(string template)
+    public async Task<bool> ExistTemplate()
     {
-        return await _context.NotificationTemplates.AnyAsync(r => r.Template == template);
+        return await _context.NotificationTemplates.AnyAsync(r => r.Id == 1);
     }
 }

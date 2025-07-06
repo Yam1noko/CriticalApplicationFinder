@@ -11,7 +11,8 @@ public interface INotificationRepository
 
     Task<int> FindId(string email);
 
-    Task<NotificationTemplate> GetTemplate();
+    Task<NotificationTemplate?> GetTemplate();
     Task AddTemplate (NotificationTemplate template);
     Task UpdateTemplate(NotificationTemplate template);
+    Task<bool> ExistTemplate();
 }

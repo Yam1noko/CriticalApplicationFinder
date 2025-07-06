@@ -1,35 +1,54 @@
-﻿using backend.Models.Internal;
+﻿using backend.DataTransferObject;
+using backend.Models.Internal;
 using backend.Repositories;
+using backend.Services;
 using Microsoft.AspNetCore.Mvc;
 
 [Route("api/notification")]
 public class NotificationSettingController : ControllerBase
 {
     private readonly INotificationRepository _repo;
+    private readonly INotificationService _serv;
 
-    public NotificationSettingController(INotificationRepository repo)
+    public NotificationSettingController(INotificationRepository repo, INotificationService serv)
     {
         _repo = repo;
+        _serv = serv;
+    }
+
+    [HttpGet("notificationNotificationGet")]
+    public async Task<IActionResult> GetNotification()
+    {
+        NotificationDTO list = await _serv.GetNotification();
+        var str = "<mails>";
+        foreach (var item in list.Emails)
+        {
+            str += item + ", ";
+        }
+        str += "</email>\n";
+        str += list.Template;
+        return Ok(str);
     }
 
     [HttpGet("notificationEmailGet")]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> getAllEmais()
     {
         var list = await _repo.GetAllEmails();
         return Ok(list);
     }
-    [HttpGet("notificationEmailPost")]
+
+    [HttpPost("notificationEmailPost")]
     public async Task<IActionResult> EmailPost([FromQuery] string email)
     {
-        if (await _repo.ExistEmail(email)) 
+        if (await _repo.ExistEmail(email))
         {
-            return BadRequest(); 
+            return BadRequest();
         }
         else
         {
             var mail = new NotificationEmail
             {
-                Id = await _repo.FindId("max")+1,
+                Id = await _repo.FindId("max") + 1,
                 Address = email
             };
             await _repo.AddEmail(mail);
@@ -62,28 +81,10 @@ public class NotificationSettingController : ControllerBase
         return Ok(list);
     }
 
-    [HttpGet("notificationTemplatePost")]
-    public async Task<IActionResult> TemplatePost([FromQuery] string template)
+    [HttpGet("notificationTemplateUpdate")]
+    public async Task<IActionResult> TemplateUpdate([FromQuery] string template)
     {
-
-        var templ = new NotificationTemplate
-        {
-            Id = 1,
-            Template = template
-        };
-        await _repo.AddTemplate(templ);
-        return Created();
-    }
-
-    [HttpGet("notificationTemplatePut")]
-    public async Task<IActionResult> TemplatePut([FromQuery] string template)
-    {
-        var templ = new NotificationTemplate
-        {
-            Id = 1,
-            Template = template
-        };
-        await _repo.UpdateTemplate(templ);
+        _serv.UpdateTemplate(template);
         return Created();
     }
 }
