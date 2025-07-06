@@ -12,7 +12,7 @@ public class EFRuleRepository : IRuleRepository
     {
         _context = context;
     }
-    
+
     public async Task<Rule?> GetById(int id)
     {
         return await _context.Rules.FirstOrDefaultAsync(r => r.Id == id);
@@ -39,7 +39,7 @@ public class EFRuleRepository : IRuleRepository
     public async Task Update(Rule rule)
     {
         using var transaction = await _context.Database.BeginTransactionAsync();
-        
+
         try
         {
             var existingRule = await _context.Rules
@@ -100,6 +100,22 @@ public class EFRuleRepository : IRuleRepository
 
     public async Task<List<RuleFullName>> GetAllFullNames()
     {
-        return await _context.RuleFullNames.ToListAsync();  
+        return await _context.RuleFullNames.ToListAsync();
+    }
+    
+    public async Task<List<RuleFullName>> GetFullNamesByRuleId(int ruleId)
+    {
+        return await _context.RuleFullNames
+            .Where(fn => fn.RuleId == ruleId)
+            .AsNoTracking()
+            .ToListAsync();
+    }
+
+    public async Task<List<RuleSubstring>> GetSubstringsByRuleId(int ruleId)
+    {
+        return await _context.RuleSubstrings
+            .Where(ss => ss.RuleId == ruleId)
+            .AsNoTracking()
+            .ToListAsync();
     }
 }

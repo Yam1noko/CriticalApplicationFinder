@@ -9,4 +9,6 @@ public interface IRuleRepository
     Task<Rule?> GetById(int id);
     Task<List<RuleSubstring>> GetAllSubstrings();
     Task<List<RuleFullName>> GetAllFullNames();
+    Task<List<RuleFullName>> GetFullNamesByRuleId(int ruleId);
+    Task<List<RuleSubstring>> GetSubstringsByRuleId(int ruleId);
 }

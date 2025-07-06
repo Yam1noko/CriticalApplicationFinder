@@ -1,24 +1,27 @@
-using backend.Repositories;
+using backend.Services;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
 [Route("api")]
 public class RuleController : ControllerBase
 {
-    private readonly IRuleRepository _repo;
+    private readonly IRuleService _service;
 
-    public RuleController(IRuleRepository repo)
+    public RuleController(IRuleService service)
     {
-        _repo = repo;
+        _service = service;
     }
 
     [HttpGet("rules")]
     public async Task<IActionResult> GetRules()
     {
-        try {
-            return Ok(await _repo.GetAll());
+        try 
+        {
+            var rules = await _service.GetAllRules();
+            return Ok(rules);
         }
-        catch (Exception ex) {
+        catch (Exception ex) 
+        {
             return StatusCode(500, $"Internal server error: {ex.Message}");
         }
     }
@@ -26,52 +29,78 @@ public class RuleController : ControllerBase
     [HttpPost("rules")]
     public async Task<IActionResult> AddRule([FromBody] Rule rule)
     {
-        await _repo.Add(rule);
-        return NoContent();
+        try
+        {
+            await _service.AddRule(rule);
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.Message);
+        }
     }
 
     [HttpPut("rules/{id}")]
     public async Task<IActionResult> UpdateRule([FromRoute] int id, [FromBody] Rule rule)
     {
-        if (id != rule.Id)
-        {
-            return BadRequest("ID in route does not match ID in request body");
-        }
-
         try
         {
-            await _repo.Update(rule);
+            await _service.UpdateRule(id, rule);
             return NoContent();
         }
-        catch (Exception)
+        catch (ArgumentException ex)
         {
-            return StatusCode(500, "Internal server error");
+            return BadRequest(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.Message);
         }
     }
 
     [HttpDelete("rules/{id}")]
-    public async Task<IActionResult> DeleteRule([FromRoute] string id)
+    public async Task<IActionResult> DeleteRule([FromRoute] int id)
     {
-        var rule = await _repo.GetById(Int32.Parse(id));
-        if (rule == null)
+        try
+        {
+            await _service.DeleteRule(id);
+            return NoContent();
+        }
+        catch (KeyNotFoundException)
         {
             return NotFound();
         }
-        await _repo.Remove(rule);
-        return NoContent();
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.Message);
+        }
     }
 
     [HttpGet("FullNames")]
     public async Task<IActionResult> GetFullNames()
     {
-        var fullNames = await _repo.GetAllFullNames();
-        return Ok(fullNames);
+        try
+        {
+            var fullNames = await _service.GetAllFullNames();
+            return Ok(fullNames);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.Message);
+        }
     }
 
     [HttpGet("substrings")]
-    public async Task<IActionResult> GetSubstrings() 
+    public async Task<IActionResult> GetSubstrings()
     {
-        var substrings = await _repo.GetAllSubstrings();
-        return Ok(substrings);
+        try
+        {
+            var substrings = await _service.GetAllSubstrings();
+            return Ok(substrings);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.Message);
+        }
     }
 }
