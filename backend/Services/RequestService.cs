@@ -31,6 +31,7 @@
                 CreationDate = r.CreationDate,
                 ClientName = r.ClientName,
                 ShortDescr = r.ShortDescr,
+                DescriptionRtf4096 = r.DescriptionRtf4096,
                 IsCritical = r.isCritical
             });
         }
