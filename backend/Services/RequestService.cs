@@ -13,12 +13,14 @@
         private readonly IRequestRepository _internalRepo;
         private readonly IExternalRequestRepository _externalRepo;
         private readonly IMapper _mapper;
+        private readonly IRuleService _ruleService;
 
-        public RequestService(IRequestRepository repo, IExternalRequestRepository externalRepo, IMapper mapper)
+        public RequestService(IRequestRepository repo, IExternalRequestRepository externalRepo, IMapper mapper, IRuleService ruleService)
         {
             _internalRepo = repo;
             _externalRepo = externalRepo;
             _mapper = mapper;
+            _ruleService = ruleService;
         }
 
         public async Task<IEnumerable<RequestDto>> GetRequestsInRange(DateTime from, DateTime to)
@@ -50,8 +52,11 @@
                 if (!internalById.TryGetValue(externalReq.Id, out var internalReq))
                 {
                     var newInternal = _mapper.Map<Models.Internal.Request>(externalReq);
-                    //Вызываем кусок кода Германа с этим newInternal
-                    //Если критический, то вслед за Приколами Германа, мутим приколы Дениса
+                    newInternal = await _ruleService.IsRequestCritical(newInternal);
+                    if (newInternal.isCritical == true)
+                    {
+                        //модуль Дениса
+                    }
                     await _internalRepo.Add(newInternal);
                     hasChanges = true;
                 }

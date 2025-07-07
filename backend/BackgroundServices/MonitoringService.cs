@@ -2,6 +2,7 @@
 using backend.Models.External;
 using backend.Models.Internal;
 using backend.Repositories;
+using backend.Services;
 
 namespace backend.BackgroundServices
 {
@@ -9,7 +10,6 @@ namespace backend.BackgroundServices
     {
         private readonly ILogger<MonitoringService> _logger;
         private readonly IServiceProvider _serviceProvider;
-
         public MonitoringService(
             IServiceProvider serviceProvider,
             ILogger<MonitoringService> logger)
@@ -31,8 +31,10 @@ namespace backend.BackgroundServices
                     var internalRepo = scope.ServiceProvider.GetRequiredService<IRequestRepository>();
                     var externalRepo = scope.ServiceProvider.GetRequiredService<IExternalRequestRepository>();
                     var mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
+                    var ruleService = scope.ServiceProvider.GetRequiredService<IRuleService>();
 
-                    await CheckAndSync(internalRepo, externalRepo, mapper);
+
+                    await CheckAndSync(internalRepo, externalRepo, mapper, ruleService);
                 }
                 catch (Exception ex)
                 {
@@ -48,7 +50,7 @@ namespace backend.BackgroundServices
         private async Task CheckAndSync(
             IRequestRepository internalRepo,
             IExternalRequestRepository externalRepo,
-            IMapper mapper)
+            IMapper mapper, IRuleService ruleService)
         {
             var external = (await externalRepo.GetAllAsync()).ToList();
             var internalList = (await internalRepo.GetAllAsync()).ToList();
@@ -61,8 +63,11 @@ namespace backend.BackgroundServices
                 if (!internalById.TryGetValue(externalReq.Id, out var internalReq))
                 {
                     var newInternal = mapper.Map<Request>(externalReq);
-                    //Германовские приколы
-                    //Если критическая, то дениса приколы
+                    newInternal = await ruleService.IsRequestCritical(newInternal);
+                    if (newInternal.isCritical == true)
+                    {
+                        //модуль Дениса
+                    }
                     await internalRepo.Add(newInternal);
                     hasChanges = true;
                 }

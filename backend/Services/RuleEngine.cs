@@ -13,7 +13,7 @@ public class RuleEngine
 
     private string RemoveAllNonAlphanumeric(string s)
     {
-        return Regex.Replace(s, "[^a-zA-Z0-9]", "");
+        return Regex.Replace(s, "[^\\p{L}\\p{Nd}]", "");
     }
 
     private string Normalize(string s)

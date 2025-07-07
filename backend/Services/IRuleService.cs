@@ -1,6 +1,6 @@
 namespace backend.Services
 {
-    using backend.DataTransferObject;
+    using backend.Models.Internal;
 
     public interface IRuleService
     {
@@ -10,6 +10,6 @@ namespace backend.Services
         Task DeleteRule(int id);
         Task<List<RuleSubstring>> GetAllSubstrings();
         Task<List<RuleFullName>> GetAllFullNames();
-        Task<RequestDto> IsRequestCritical(RequestDto request);
+        Task<Request> IsRequestCritical(Request request);
     }
 }

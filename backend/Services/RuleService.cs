@@ -1,6 +1,5 @@
 namespace backend.Services
 {
-    using backend.DataTransferObject;
     using backend.Repositories;
     using backend.Models.Internal;
 
@@ -56,18 +55,14 @@ namespace backend.Services
             return await _repo.GetAllFullNames();
         }
 
-        public async Task<RequestDto> IsRequestCritical(RequestDto request)
+        public async Task<Request> IsRequestCritical(Request request)
         {
             // Получаем все активные правила
             var allRules = await _repo.GetAll();
             var activeRules = allRules.Where(r => r.IsActive).ToList();
 
             // Создаем Request для RuleEngine
-            var engineRequest = new Request
-            {
-                ClientName = request.ClientName ?? "",
-                DescriptionRtf4096 = request.DescriptionRtf4096 ?? ""
-            };
+            var engineRequest = request;
 
             // Проверяем соответствие каждому активному правилу
             foreach (var rule in activeRules)
@@ -75,28 +70,13 @@ namespace backend.Services
                 bool isMatch = await _ruleEngine.IsRequestCorrespondToRule(engineRequest, rule);
                 if (isMatch)
                 {
-                    return new RequestDto
-                    {
-                        Id = request.Id,
-                        CreationDate = request.CreationDate,
-                        ClientName = request.ClientName,
-                        ShortDescr = request.ShortDescr,
-                        DescriptionRtf4096 = request.DescriptionRtf4096,
-                        IsCritical = true
-                    };
+                    request.isCritical = true;
+                    return request;
                 }
             }
 
             // Если не соответствует ни одному правилу
-            return new RequestDto
-            {
-                Id = request.Id,
-                CreationDate = request.CreationDate,
-                ClientName = request.ClientName,
-                ShortDescr = request.ShortDescr,
-                DescriptionRtf4096 = request.DescriptionRtf4096,
-                IsCritical = false
-            };
+            return request;
         }
     }
 }
