@@ -6,8 +6,11 @@
     {
         Task<NotificationDTO> GetNotification();
 
-        Task UpdateTemplate(string template);
-        Task PostNotification(NotificationDTO notification);
+        Task<bool> UpdateTemplate(string template);
+
+        Task<bool> PostEmail (string mail);
+
+        Task<bool> DeleteEmail(string mail);
     }
 
 }

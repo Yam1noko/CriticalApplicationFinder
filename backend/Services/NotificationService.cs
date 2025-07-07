@@ -14,13 +14,16 @@
         public NotificationService(INotificationRepository repo)
         {
             _Repo = repo;
-            _notificationDTO = new NotificationDTO();
-            _notificationDTO.Template = "Отсутствует";
+            _notificationDTO = new NotificationDTO
+            {
+                Template = "Отсутствует",
+                Emails = Array.Empty<string>()
+            };
         }
 
         public async Task<NotificationDTO> GetNotification()
         {
-            if (_notificationDTO.Template == "Отсутствует")
+            if ((_notificationDTO.Template == "Отсутствует") || (_notificationDTO.Emails.Length == 0))
             {
                 var template = await _Repo.GetTemplate();
                 List<NotificationEmail> mailsReq = await _Repo.GetAllEmails();
@@ -42,20 +45,83 @@
             }
         }
 
-        public async Task UpdateTemplate(string template) {
+        public async Task<bool> UpdateTemplate(string template) {
             var templ = new NotificationTemplate();
             templ.Template = template;
             templ.Id = 1;
             if (await _Repo.ExistTemplate())
             {
+                _notificationDTO.Template = template;
                 _Repo.UpdateTemplate(templ);
+                return true;
             }
             else
             {
+                _notificationDTO.Template = template;
                 _Repo.AddTemplate(templ);
+                return false;
             }
         }
 
-        public async Task PostNotification(NotificationDTO notification) { }
+        public async Task<bool> PostEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email) || await _Repo.ExistEmail(email))
+            {
+                return false;
+            }
+            else
+            {
+                var mail = new NotificationEmail
+                {
+                    Id = await _Repo.FindId("max") + 1,
+                    Address = email
+                };
+
+                List<string> mmails = new List<string> { };
+
+                foreach (var item in _notificationDTO.Emails)
+                {
+                    mmails.Add(item);
+                }
+
+                mmails.Add(email);
+
+                _notificationDTO.Emails = mmails.ToArray();
+
+
+                await _Repo.AddEmail(mail);
+                return true;
+            }
+        }
+
+        public async Task<bool> DeleteEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email) || !(await _Repo.ExistEmail(email)))
+            {
+                return false;
+            }
+            else
+            {
+                var mail = new NotificationEmail
+                {
+                    Id = await _Repo.FindId(email),
+                    Address = email
+                };
+
+                List<string> mmails = new List<string> { };
+
+                foreach (var item in _notificationDTO.Emails)
+                {
+                    if (item != email) 
+                    { mmails.Add(item); }
+                }
+
+                _notificationDTO.Emails = mmails.ToArray();
+
+
+                await _Repo.RemoveEmail(mail);
+                return true;
+            }
+        }
     }
 }

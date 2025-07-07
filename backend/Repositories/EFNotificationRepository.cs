@@ -68,6 +68,6 @@ public class EFNotificationRepository : INotificationRepository
 
     public async Task<bool> ExistTemplate()
     {
-        return await _context.NotificationTemplates.AnyAsync(r => r.Id == 1);
+        return await _context.NotificationTemplates.AsNoTracking().AnyAsync();
     }
 }
