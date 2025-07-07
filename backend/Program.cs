@@ -1,5 +1,6 @@
 using backend.BackgroundServices;
 using backend.Data;
+using backend.Email;
 using backend.Mapping;
 using backend.Repositories;
 using backend.Services;
@@ -23,6 +24,14 @@ builder.Services.AddAutoMapper(cfg =>
 {
     cfg.AddProfile<MappingProfile>();
 });
+
+builder.Services.AddSingleton(new EmailSender(
+    host: "sandbox.smtp.mailtrap.io",
+    port: 2525,
+    from: "pavel.yavits@yandex.ru",                  
+    username: "ad8970d4a31125",                // <-- username из Mailtrap
+    password: "7c01f159729dd2"                 // <-- password из Mailtrap
+));
 
 builder.Services.AddHostedService<MonitoringService>();
 

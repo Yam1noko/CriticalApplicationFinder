@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using backend.Email;
 using backend.Models.External;
 using backend.Models.Internal;
 using backend.Repositories;
@@ -32,9 +33,9 @@ namespace backend.BackgroundServices
                     var externalRepo = scope.ServiceProvider.GetRequiredService<IExternalRequestRepository>();
                     var mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
                     var ruleService = scope.ServiceProvider.GetRequiredService<IRuleService>();
+                    var emailSender = scope.ServiceProvider.GetRequiredService<EmailSender>();
 
-
-                    await CheckAndSync(internalRepo, externalRepo, mapper, ruleService);
+                    await CheckAndSync(internalRepo, externalRepo, mapper, ruleService, emailSender);
                 }
                 catch (Exception ex)
                 {
@@ -50,7 +51,7 @@ namespace backend.BackgroundServices
         private async Task CheckAndSync(
             IRequestRepository internalRepo,
             IExternalRequestRepository externalRepo,
-            IMapper mapper, IRuleService ruleService)
+            IMapper mapper, IRuleService ruleService, EmailSender emailSender)
         {
             var external = (await externalRepo.GetAllAsync()).ToList();
             var internalList = (await internalRepo.GetAllAsync()).ToList();
@@ -66,7 +67,7 @@ namespace backend.BackgroundServices
                     newInternal = await ruleService.IsRequestCritical(newInternal);
                     if (newInternal.isCritical == true)
                     {
-                        //модуль Дениса
+                        //денис
                     }
                     await internalRepo.Add(newInternal);
                     hasChanges = true;
