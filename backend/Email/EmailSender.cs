@@ -1,6 +1,7 @@
 ﻿using backend.Models.Internal;
 using System.Net;
 using System.Net.Mail;
+using Scriban;
 
 namespace backend.Email
 {
@@ -21,8 +22,20 @@ namespace backend.Email
             _password = password;
         }
 
-        public async Task SendAsync(string subject, string body, string recipient, string? fromOverride = null)
+        public async Task SendAsync(Request request, string templateText, string recipient, string? fromOverride = null)
         {
+            var subject = $@"Критическая заявка: {request.ShortDescr}";
+            var template = Template.Parse(templateText);
+            var body = template.Render(new {
+                seviceId = request.ServiceId,
+                id = request.Id, 
+                title = request.Title,
+                creationDate = request.CreationDate,
+                clientName = request.ClientName,
+                shortDescr = request.ShortDescr,
+                description = request.DescriptionRtf4096
+            });
+
             var from = fromOverride ?? _from;
             var message = new MailMessage(from, recipient, subject, body)
             {
