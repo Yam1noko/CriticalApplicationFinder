@@ -27,19 +27,40 @@ public class NotificationSettingController : ControllerBase
     public async Task<IActionResult> EmailPost([FromQuery] string email)
     {
         var result = await _serv.PostEmail(email);
-        return Ok(result);
+        if (result)
+        {
+            return Created();
+        }
+        else
+        {
+            return BadRequest();
+        }
     }
-    [HttpGet("notificationEmailRemove")]
+    [HttpDelete("notificationEmailRemove")]
     public async Task<IActionResult> EmailRemove([FromQuery] string email)
     {
         var result = await _serv.DeleteEmail(email);
-        return Ok(result);
+        if (result)
+        {
+            return NoContent();
+        }
+        else
+        {
+            return BadRequest();
+        }
     }   
 
-    [HttpGet("notificationTemplateUpdate")]
+    [HttpPut("notificationTemplateUpdate")]
     public async Task<IActionResult> TemplateUpdate([FromQuery] string template)
     {
         var result = await _serv.UpdateTemplate(template);
-        return Ok(result);
+        if (result)
+        {
+            return NoContent();
+        }
+        else
+        {
+            return BadRequest();
+        }
     }
 }

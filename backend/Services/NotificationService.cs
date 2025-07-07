@@ -1,19 +1,23 @@
 ﻿namespace backend.Services
 {
     using backend.DataTransferObject;
-    using backend.Models;
-    using backend.Models.External;
     using backend.Models.Internal;
     using backend.Repositories;
+    using backend.Email;
+    using Scriban;
+
     public class NotificationService : INotificationService
     {
         private readonly INotificationRepository _Repo;
+        private readonly EmailSender _Sender;
+
 
         private NotificationDTO _notificationDTO;
 
-        public NotificationService(INotificationRepository repo)
+        public NotificationService(INotificationRepository repo, EmailSender sender)
         {
             _Repo = repo;
+            _Sender = sender;
             _notificationDTO = new NotificationDTO
             {
                 Template = "Отсутствует",
@@ -46,6 +50,11 @@
         }
 
         public async Task<bool> UpdateTemplate(string template) {
+            var templat = Template.Parse(template);
+            if (templat.HasErrors) 
+            { 
+                return false; 
+            }
             var templ = new NotificationTemplate();
             templ.Template = template;
             templ.Id = 1;
@@ -59,13 +68,13 @@
             {
                 _notificationDTO.Template = template;
                 _Repo.AddTemplate(templ);
-                return false;
+                return true;
             }
         }
 
         public async Task<bool> PostEmail(string email)
         {
-            if (string.IsNullOrWhiteSpace(email) || await _Repo.ExistEmail(email))
+            if (string.IsNullOrWhiteSpace(email) || await _Repo.ExistEmail(email) || !(email.Contains("@")))
             {
                 return false;
             }
@@ -96,7 +105,7 @@
 
         public async Task<bool> DeleteEmail(string email)
         {
-            if (string.IsNullOrWhiteSpace(email) || !(await _Repo.ExistEmail(email)))
+            if (string.IsNullOrWhiteSpace(email) || !(await _Repo.ExistEmail(email)) || !(email.Contains("@")))
             {
                 return false;
             }
@@ -123,5 +132,14 @@
                 return true;
             }
         }
+
+        public async Task SendEmail(Request request)
+        {
+            foreach (var item in _notificationDTO.Emails)
+            {
+                _Sender.SendAsync(request, _notificationDTO.Template, item);
+            }
+        }
+
     }
 }
