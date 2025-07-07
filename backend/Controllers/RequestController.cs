@@ -26,6 +26,15 @@ public class RequestController : ControllerBase
         return Ok(list) ;
     }
 
+    [HttpGet("getFirst")]
+    public async Task<IActionResult> GetFirst()
+    {
+        DateTime from = new DateTime(2000, 1, 1);
+        DateTime to = new DateTime(3000, 1, 1);
+        var list = (await _service.GetRequestsInRange(from, to)).FirstOrDefault();
+        return Ok(list);
+    }
+
     [HttpPost("manual-check")]
     public async Task<IActionResult> ManualCheck()
     {
