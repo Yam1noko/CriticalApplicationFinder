@@ -64,17 +64,4 @@ public class NotificationSettingController : ControllerBase
         }
     }
 
-    [HttpPost("notificationSendEmail")]
-    public async Task<IActionResult> SendEmail()
-    {
-        var req = new Request
-        {
-            ClientName = "Вася Пупкин",
-            Id = "0001",
-            ShortDescr = "Я не могу",
-            DescriptionRtf4096 = "Я могу"
-        };
-        await _serv.SendEmail(req);
-        return NoContent();
-    }
 }
