@@ -1,13 +1,30 @@
-﻿using backend.Models.Internal;
+﻿using backend.Repositories;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
+[Table("Rules")]
 public class Rule
 {
+    [Key]
+    [Column("id")]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
-    public string FullName { get; set; } = "";
-    public string Substring { get; set; } = "";
+    [Column("name")]
+    public string Name { get; set; } = "";
+    [Column("use_and")]
     public bool UseAnd { get; set; }
+    [Column("is_active")]
     public bool IsActive { get; set; }
 
-    public RuleFullName? RuleFullName { get; set; }
-    public RuleSubstring? RuleSubstring { get; set; }
+    public List<RuleFullName>? RuleFullNames { get; set; } = new List<RuleFullName>();
+    public List<RuleSubstring>? RuleSubstrings { get; set; } = new List<RuleSubstring>();
+
+    public async Task PopulateFromDatabase(IRuleRepository repository)
+    {
+        var fullNames = await repository.GetFullNamesByRuleId(this.Id);
+        this.RuleFullNames = fullNames?.ToList() ?? new List<RuleFullName>();
+
+        var substrings = await repository.GetSubstringsByRuleId(this.Id);
+        this.RuleSubstrings = substrings?.ToList() ?? new List<RuleSubstring>();
+    }
 }

@@ -1,7 +1,18 @@
-﻿public class RuleSubstring
-{
-    public int Id { get; set; }
-    public string Substring { get; set; } = "";
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-    public ICollection<Rule> Rules { get; set; } = new List<Rule>();
+[Table("RuleSubstrings")]
+public class RuleSubstring
+{
+    [Key]
+    [Column("id")]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public int Id { get; set; }
+
+    [ForeignKey(nameof(Rule))]
+    [Column("rule_id")]
+    public int RuleId { get; set; }
+
+    [Column("substring")]
+    public string Substring { get; set; } = "";
 }
