@@ -79,7 +79,11 @@
         
         public async Task<bool> PostEmail(string email)
         {
-            if (string.IsNullOrWhiteSpace(email) || await _Repo.ExistEmail(email) || !(email.Contains("@")))
+            if (string.IsNullOrWhiteSpace(email) || !IsValidEmail(email))
+            {
+                return false;
+            }
+            else if (await _Repo.ExistEmail(email))
             {
                 return false;
             }
@@ -108,9 +112,26 @@
             }
         }
 
+        private bool IsValidEmail(string email)
+        {
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(email);
+                return addr.Address == email;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public async Task<bool> DeleteEmail(string email)
         {
-            if (string.IsNullOrWhiteSpace(email) || !(await _Repo.ExistEmail(email) || !(email.Contains("@"))))
+            if (string.IsNullOrWhiteSpace(email) || !IsValidEmail(email))
+            {
+                return false;
+            }
+            else if (!(await _Repo.ExistEmail(email)))
             {
                 return false;
             }

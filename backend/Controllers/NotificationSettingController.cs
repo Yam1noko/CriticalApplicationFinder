@@ -63,5 +63,4 @@ public class NotificationSettingController : ControllerBase
             return BadRequest();
         }
     }
-
 }
