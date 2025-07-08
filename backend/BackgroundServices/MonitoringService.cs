@@ -33,9 +33,9 @@ namespace backend.BackgroundServices
                     var externalRepo = scope.ServiceProvider.GetRequiredService<IExternalRequestRepository>();
                     var mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
                     var ruleService = scope.ServiceProvider.GetRequiredService<IRuleService>();
-                    var emailSender = scope.ServiceProvider.GetRequiredService<EmailSender>();
+                    var notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
 
-                    await CheckAndSync(internalRepo, externalRepo, mapper, ruleService, emailSender);
+                    await CheckAndSync(internalRepo, externalRepo, mapper, ruleService, notificationService);
                 }
                 catch (Exception ex)
                 {
@@ -51,7 +51,7 @@ namespace backend.BackgroundServices
         private async Task CheckAndSync(
             IRequestRepository internalRepo,
             IExternalRequestRepository externalRepo,
-            IMapper mapper, IRuleService ruleService, EmailSender emailSender)
+            IMapper mapper, IRuleService ruleService, INotificationService notificationService)
         {
             var external = (await externalRepo.GetAllAsync()).ToList();
             var internalList = (await internalRepo.GetAllAsync()).ToList();
@@ -67,7 +67,7 @@ namespace backend.BackgroundServices
                     newInternal = await ruleService.IsRequestCritical(newInternal);
                     if (newInternal.isCritical == true)
                     {
-                        //денис
+                        await notificationService.SendEmail(newInternal);
                     }
                     await internalRepo.Add(newInternal);
                     hasChanges = true;

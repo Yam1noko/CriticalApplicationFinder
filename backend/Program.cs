@@ -18,28 +18,18 @@ builder.Services.AddDbContext<ExternalDbContext>(options =>
 
 builder.Services.AddScoped<IRequestRepository, EFRequestRepository>();
 builder.Services.AddScoped<INotificationRepository, EFNotificationRepository>();
-builder.Services.AddSingleton<INotificationService, NotificationService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
+
 
 builder.Services.AddAutoMapper(cfg =>
 {
     cfg.AddProfile<MappingProfile>();
 });
 
-builder.Services.AddSingleton(new EmailSender(
-    host: "sandbox.smtp.mailtrap.io",
-    port: 2525,
-    from: "pavel.yavits@yandex.ru",
-    username: "c07ddc1e215a42",                // <-- username из Mailtrap
-    password: "ff23305765ebcb"                 // <-- password из Mailtrap
-));
 
 builder.Services.AddScoped<IExternalRequestRepository, EFExternalRequestRepository>();
 builder.Services.AddScoped<IRequestService, RequestService>();
 
-builder.Services.AddAutoMapper(cfg =>
-{
-    cfg.AddProfile<MappingProfile>();
-});
 
 builder.Services.AddSingleton(new EmailSender(
     host: "sandbox.smtp.mailtrap.io",
@@ -53,7 +43,6 @@ builder.Services.AddHostedService<MonitoringService>();
 
 builder.Services.AddScoped<IRuleRepository, EFRuleRepository>();
 
-builder.Services.AddScoped<IRuleRepository, EFRuleRepository>();
 
 builder.Services.AddScoped<IRuleService, RuleService>();
 builder.Services.AddScoped<RuleEngine>();

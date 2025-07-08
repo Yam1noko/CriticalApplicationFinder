@@ -14,13 +14,15 @@
         private readonly IExternalRequestRepository _externalRepo;
         private readonly IMapper _mapper;
         private readonly IRuleService _ruleService;
+        private readonly INotificationService _notificationService;
 
-        public RequestService(IRequestRepository repo, IExternalRequestRepository externalRepo, IMapper mapper, IRuleService ruleService)
+        public RequestService(IRequestRepository repo, IExternalRequestRepository externalRepo, IMapper mapper, IRuleService ruleService, INotificationService notificationService)
         {
             _internalRepo = repo;
             _externalRepo = externalRepo;
             _mapper = mapper;
             _ruleService = ruleService;
+            _notificationService = notificationService;
         }
 
         public async Task<IEnumerable<RequestDto>> GetRequestsInRange(DateTime from, DateTime to)
@@ -55,7 +57,7 @@
                     newInternal = await _ruleService.IsRequestCritical(newInternal);
                     if (newInternal.isCritical == true)
                     {
-                        //модуль Дениса
+                        await _notificationService.SendEmail(newInternal);
                     }
                     await _internalRepo.Add(newInternal);
                     hasChanges = true;
