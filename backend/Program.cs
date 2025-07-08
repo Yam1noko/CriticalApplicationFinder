@@ -5,6 +5,7 @@ using backend.Mapping;
 using backend.Repositories;
 using backend.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,21 @@ builder.Services.AddDbContext<ExternalDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("ExternalDb")));
 
 builder.Services.AddScoped<IRequestRepository, EFRequestRepository>();
+builder.Services.AddScoped<INotificationRepository, EFNotificationRepository>();
+builder.Services.AddSingleton<INotificationService, NotificationService>();
+
+builder.Services.AddAutoMapper(cfg =>
+{
+    cfg.AddProfile<MappingProfile>();
+});
+
+builder.Services.AddSingleton(new EmailSender(
+    host: "sandbox.smtp.mailtrap.io",
+    port: 2525,
+    from: "pavel.yavits@yandex.ru",
+    username: "c07ddc1e215a42",                // <-- username из Mailtrap
+    password: "ff23305765ebcb"                 // <-- password из Mailtrap
+));
 
 builder.Services.AddScoped<IExternalRequestRepository, EFExternalRequestRepository>();
 builder.Services.AddScoped<IRequestService, RequestService>();
@@ -55,10 +71,10 @@ app.UseSwaggerUI();
 using (var scope = app.Services.CreateScope())
 {
     var internalDb = scope.ServiceProvider.GetRequiredService<InternalDbContext>();
-    internalDb.Database.Migrate();
+    internalDb.Database.EnsureCreated();
 
     var externalDb = scope.ServiceProvider.GetRequiredService<ExternalDbContext>();
-    externalDb.Database.Migrate();
+    externalDb.Database.EnsureCreated();
 }
 
 app.Urls.Add("http://0.0.0.0:5000");

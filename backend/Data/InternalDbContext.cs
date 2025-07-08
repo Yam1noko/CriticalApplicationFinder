@@ -25,9 +25,19 @@ public class InternalDbContext : DbContext
 
         // Rule (1) -> RuleSubstrings (Many)
         modelBuilder.Entity<Rule>()
+
             .HasMany(r => r.RuleSubstrings)
             .WithOne()
             .HasForeignKey(s => s.RuleId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<NotificationEmail>()
+            .HasIndex(x => x.Id)
+            .IsUnique();
+
+        modelBuilder.Entity<NotificationTemplate>()
+            .HasIndex(x => x.Id)
+            .IsUnique();
+
     }
 }
