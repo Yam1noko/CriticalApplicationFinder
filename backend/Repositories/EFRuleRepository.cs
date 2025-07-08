@@ -23,6 +23,7 @@ public class EFRuleRepository : IRuleRepository
             .Include(r => r.RuleFullNames)
             .Include(r => r.RuleSubstrings)
             .AsNoTracking()
+            .OrderByDescending(r => r.Id)
             .ToListAsync();
     }
     public async Task Add(Rule rule)
@@ -35,6 +36,11 @@ public class EFRuleRepository : IRuleRepository
         _context.Rules.Remove(rule);
         await _context.SaveChangesAsync();
     }
+    public InternalDbContext GetDbContext()
+    {
+        return _context;
+    }
+
 
     public async Task Update(Rule rule)
     {
@@ -76,9 +82,7 @@ public class EFRuleRepository : IRuleRepository
                     {
                         Id = name.Id,
                         RuleId = rule.Id,
-                        Surname = name.Surname,
-                        Name = name.Name,
-                        Patronymic = name.Patronymic
+                        FullName = name.FullName
                     });
                 }
             }
@@ -118,4 +122,23 @@ public class EFRuleRepository : IRuleRepository
             .AsNoTracking()
             .ToListAsync();
     }
+
+    public async Task RemoveSubstringsByRuleId(int ruleId)
+    {
+        var existing = await _context.RuleSubstrings
+            .Where(x => x.RuleId == ruleId)
+            .ToListAsync();
+        _context.RuleSubstrings.RemoveRange(existing);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task RemoveFullNamesByRuleId(int ruleId)
+    {
+        var existing = await _context.RuleFullNames
+            .Where(x => x.RuleId == ruleId)
+            .ToListAsync();
+        _context.RuleFullNames.RemoveRange(existing);
+        await _context.SaveChangesAsync();
+    }
+
 }

@@ -38,12 +38,9 @@ public class RuleEngine
             for (int i = 0; i < rule.RuleFullNames.Count; i++)
             {
                 RuleFullName fullName = rule.RuleFullNames[i];
-                string surname = fullName.Surname != null ? fullName.Surname : "";
-                string name = fullName.Name != null ? fullName.Name : "";
-                string patronymic = fullName.Patronymic != null ? fullName.Patronymic : "";
+                string fullname = fullName.FullName != null ? fullName.FullName : "";
                 
-                string composedName = surname + name + patronymic;
-                string normalizedRuleName = Normalize(composedName).ToLower();
+                string normalizedRuleName = Normalize(fullname).ToLower();
 
                 if (normalizedRuleName.Length > 0 && normalizedClientName.Contains(normalizedRuleName))
                 {

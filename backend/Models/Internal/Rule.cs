@@ -1,10 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using backend.Repositories;
+﻿using backend.Repositories;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 [Table("Rules")]
 public class Rule
 {
+    [Key]
     [Column("id")]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
     [Column("name")]
     public string Name { get; set; } = "";

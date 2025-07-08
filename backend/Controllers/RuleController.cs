@@ -1,5 +1,6 @@
 using backend.Services;
 using Microsoft.AspNetCore.Mvc;
+using backend.DataTransferObject;
 
 [ApiController]
 [Route("api")]
@@ -27,7 +28,7 @@ public class RuleController : ControllerBase
     }
 
     [HttpPost("rules")]
-    public async Task<IActionResult> AddRule([FromBody] Rule rule)
+    public async Task<IActionResult> AddRule([FromBody] RuleDto rule)
     {
         try
         {
@@ -41,7 +42,7 @@ public class RuleController : ControllerBase
     }
 
     [HttpPut("rules/{id}")]
-    public async Task<IActionResult> UpdateRule([FromRoute] int id, [FromBody] Rule rule)
+    public async Task<IActionResult> UpdateRule([FromRoute] int id, [FromBody] RuleDto rule)
     {
         try
         {
