@@ -15,4 +15,6 @@ public interface INotificationRepository
     Task AddTemplate (NotificationTemplate template);
     Task UpdateTemplate(NotificationTemplate template);
     Task<bool> ExistTemplate();
+
+    Task<NotificationEmail> GetEmailByAddress(string email);
 }

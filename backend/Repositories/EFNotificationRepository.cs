@@ -51,7 +51,7 @@ public class EFNotificationRepository : INotificationRepository
 
     public async Task<NotificationTemplate?> GetTemplate()
     {
-        return await _context.NotificationTemplates.FirstOrDefaultAsync() ?? new NotificationTemplate { Id = 1, Template = "Пусто"};
+        return await _context.NotificationTemplates.FirstOrDefaultAsync() ?? new NotificationTemplate { Id = 1, Template = "Пусто" };
     }
 
     public async Task AddTemplate(NotificationTemplate template)
@@ -70,4 +70,11 @@ public class EFNotificationRepository : INotificationRepository
     {
         return await _context.NotificationTemplates.AsNoTracking().AnyAsync();
     }
+
+    public async Task<NotificationEmail> GetEmailByAddress(string email)
+    {
+        return await _context.NotificationEmails
+            .FirstOrDefaultAsync(e => e.Address == email);
+    }
+
 }
