@@ -3,7 +3,6 @@ namespace backend.Services
     using backend.DataTransferObject;
     using backend.Models.Internal;
     using backend.Repositories;
-    using Microsoft.EntityFrameworkCore;
 
     public class RuleService : IRuleService
     {
@@ -134,14 +133,14 @@ namespace backend.Services
 
         public async Task<Request> IsRequestCritical(Request request)
         {
-            // Получаем все активные правила
+            
             var allRules = await _repo.GetAll();
             var activeRules = allRules.Where(r => r.IsActive).ToList();
 
-            // Создаем Request для RuleEngine
+
             var engineRequest = request;
 
-            // Проверяем соответствие каждому активному правилу
+
             foreach (var rule in activeRules)
             {
                 bool isMatch = await _ruleEngine.IsRequestCorrespondToRule(engineRequest, rule);
@@ -152,7 +151,7 @@ namespace backend.Services
                 }
             }
 
-            // Если не соответствует ни одному правилу
+
             return request;
         }
     }

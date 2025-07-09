@@ -2,8 +2,10 @@
 using backend.Email;
 using backend.Models.External;
 using backend.Models.Internal;
+using backend.Options;
 using backend.Repositories;
 using backend.Services;
+using Microsoft.Extensions.Options;
 
 namespace backend.BackgroundServices
 {
@@ -11,12 +13,15 @@ namespace backend.BackgroundServices
     {
         private readonly ILogger<MonitoringService> _logger;
         private readonly IServiceProvider _serviceProvider;
+        private readonly MonitoringOptions _options;
         public MonitoringService(
             IServiceProvider serviceProvider,
-            ILogger<MonitoringService> logger)
+            ILogger<MonitoringService> logger,
+            IOptions<MonitoringOptions> options)
         {
             _serviceProvider = serviceProvider;
             _logger = logger;
+            _options = options.Value;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -42,7 +47,7 @@ namespace backend.BackgroundServices
                     _logger.LogError(ex, "Error in MonitoringService");
                 }
 
-                await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+                await Task.Delay(TimeSpan.FromMinutes(_options.IntervalMinutes), stoppingToken);
             }
 
             _logger.LogInformation("MonitoringService stopped");
