@@ -1,7 +1,12 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\Jason\\Documents\\SummerProject\\CriticalApplicationFinder\\frontend\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{E3C3F929-CD83-4BB4-9484-8B2FE84861DC}|AngularProject10.esproj|c:\\users\\jason\\documents\\summerproject\\criticalapplicationfinder\\frontend\\src\\app\\pages\\requests-page\\components\\requests-table\\requests-table.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{E3C3F929-CD83-4BB4-9484-8B2FE84861DC}|AngularProject10.esproj|solutionrelative:src\\app\\pages\\requests-page\\components\\requests-table\\requests-table.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -9,7 +14,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 378,
-          "SelectedChildIndex": -1,
+          "SelectedChildIndex": 6,
           "Children": [
             {
               "$type": "Bookmark",
@@ -34,6 +39,19 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "requests-table.component.ts",
+              "DocumentMoniker": "C:\\Users\\Jason\\Documents\\SummerProject\\CriticalApplicationFinder\\frontend\\src\\app\\pages\\requests-page\\components\\requests-table\\requests-table.component.ts",
+              "RelativeDocumentMoniker": "src\\app\\pages\\requests-page\\components\\requests-table\\requests-table.component.ts",
+              "ToolTip": "C:\\Users\\Jason\\Documents\\SummerProject\\CriticalApplicationFinder\\frontend\\src\\app\\pages\\requests-page\\components\\requests-table\\requests-table.component.ts",
+              "RelativeToolTip": "src\\app\\pages\\requests-page\\components\\requests-table\\requests-table.component.ts",
+              "ViewState": "AgIAAI4AAAAAAAAAAAAhwMYAAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-07-09T06:20:20.417Z",
+              "EditorCaption": ""
             }
           ]
         }

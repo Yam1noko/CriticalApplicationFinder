@@ -52,7 +52,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let ticket of displayedTickets">
+            <tr *ngFor="let ticket of displayedTickets" [class.critical]="ticket.critical">
               <td>{{ ticket.ticketNumber }}</td>
               <td>{{ ticket.requester }}</td>
               <td class="text-cell">

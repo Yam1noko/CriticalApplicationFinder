@@ -90,8 +90,7 @@ export class RequestsTableComponent implements OnInit, AfterViewInit, OnDestroy 
           isExpanded: false,
           isTruncated: false
         }));
-        this.tickets = [...this.allTickets];
-        this.resetPagination();
+        this.filterTickets();
 
         this.loading = false;
         this.addAlert('Данные успешно загружены', 'success');
@@ -174,6 +173,32 @@ export class RequestsTableComponent implements OnInit, AfterViewInit, OnDestroy 
     });
   }
 
+  filterTickets(): void {
+    let filtered = [...this.allTickets];
+    if (this.filterState.requesters && this.filterState.requesters.length) {
+      const requesters = this.filterState.requesters.map(r => r.toLowerCase());
+      filtered = filtered.filter(t =>
+        requesters.some(r => t.requester.toLowerCase().includes(r))
+      );
+    }
+
+    if (this.filterState.searchText && this.filterState.searchText.trim()) {
+      const text = this.filterState.searchText.trim().toLowerCase();
+      filtered = filtered.filter(t =>
+        t.shortDescr.toLowerCase().includes(text) ||
+        t.description.toLowerCase().includes(text) ||
+        t.requester.toLowerCase().includes(text)
+      );
+    }
+
+    if (this.filterState.criticalOnly) {
+      filtered = filtered.filter(t => t.critical);
+    }
+
+    this.tickets = filtered;
+    this.resetPagination();
+  }
+
   toggleDescription(ticket: Ticket): void {
     ticket.isExpanded = !ticket.isExpanded;
   }
@@ -183,8 +208,16 @@ export class RequestsTableComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   applyFilter(filter: TicketFilter): void {
+    const fromChanged =
+      this.filterState.fromDate?.toISOString() !== filter.fromDate?.toISOString();
+    const toChanged =
+      this.filterState.toDate?.toISOString() !== filter.toDate?.toISOString();
     this.filterState = { ...filter };
-    this.loadTickets();
+    if (fromChanged || toChanged || this.allTickets.length === 0) {
+      this.loadTickets();
+    } else {
+      this.filterTickets();
+    }
   }
 
   sortBy(column: keyof Ticket): void {
