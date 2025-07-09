@@ -18,7 +18,7 @@ builder.Services.AddDbContext<ExternalDbContext>(options =>
 
 builder.Services.AddScoped<IRequestRepository, EFRequestRepository>();
 builder.Services.AddScoped<INotificationRepository, EFNotificationRepository>();
-builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddSingleton<INotificationService, NotificationService>();
 
 
 builder.Services.AddAutoMapper(cfg =>
@@ -35,8 +35,8 @@ builder.Services.AddSingleton(new EmailSender(
     host: "sandbox.smtp.mailtrap.io",
     port: 2525,
     from: "pavel.yavits@yandex.ru",                  
-    username: "ad8970d4a31125",                // <-- username из Mailtrap
-    password: "7c01f159729dd2"                 // <-- password из Mailtrap
+    username: "ad8970d4a31125",                // <-- username    Mailtrap
+    password: "7c01f159729dd2"                 // <-- password    Mailtrap
 ));
 
 builder.Services.AddHostedService<MonitoringService>();
