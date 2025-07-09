@@ -1,0 +1,106 @@
+<div class="page-layout">
+  <div class="content-area">
+    <div class="main-with-filter">
+
+      <!-- Таблица -->
+      <div class="table-area">
+
+        <!-- Панель управления -->
+        <div class="table-controls">
+          <div class="left-controls">
+            <button (click)="refreshData()">Обновить</button>
+            <label>
+              <input type="checkbox" [(ngModel)]="autoRefresh" (change)="toggleAutoRefresh()">
+              Автообновление
+            </label>
+          </div>
+          <div class="pagination-controls">
+            <button (click)="prevPage()" [disabled]="currentPage === 1">&lt;</button>
+            <span>
+              {{ ((currentPage - 1) * pageSize + 1) }}–{{ min(currentPage * pageSize, totalItems) }} из {{ totalItems }}
+            </span>
+            <button (click)="nextPage()" [disabled]="currentPage === totalPages">&gt;</button>
+          </div>
+        </div>
+
+        <!-- LOADING OVERLAY -->
+        <div class="loading-overlay" *ngIf="loading">
+          <div class="loading-box">
+            Идёт загрузка данных...
+          </div>
+        </div>
+
+        <!-- Таблица данных -->
+        <table>
+          <thead>
+            <tr>
+              <th (click)="sortBy('ticketNumber')">
+                Номер заявки {{ getSortIndicator('ticketNumber') }}
+              </th>
+              <th (click)="sortBy('requester')">
+                Заявитель {{ getSortIndicator('requester') }}
+              </th>
+              <th (click)="sortBy('description')">
+                Текст заявки {{ getSortIndicator('description') }}
+              </th>
+              <th (click)="sortBy('link')">
+                Ссылка на заявку {{ getSortIndicator('link') }}
+              </th>
+              <th (click)="sortBy('createdAt')">
+                Время создания {{ getSortIndicator('createdAt') }}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let ticket of displayedTickets">
+              <td>{{ ticket.ticketNumber }}</td>
+              <td>{{ ticket.requester }}</td>
+              <td class="text-cell">
+                <div class="short-desc">
+                  {{ ticket.shortDescr }}
+                </div>
+                <div class="description-wrapper" [class.collapsed]="!ticket.isExpanded && ticket.isTruncated">
+                  <div #descriptionContent
+                       class="description-content"
+                       [innerHTML]="getDisplayDescription(ticket)">
+                  </div>
+                </div>
+                <span *ngIf="ticket.isTruncated"
+                      class="toggle-link"
+                      (click)="toggleDescription(ticket)">
+                  {{ ticket.isExpanded ? 'Скрыть' : '... Читать далее' }}
+                </span>
+              </td>
+              <td>
+                <a *ngIf="ticket.link" [href]="ticket.link" target="_blank">Перейти</a>
+              </td>
+              <td>{{ ticket.createdAt | date:'d/M/yy, HH:mm' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- Фильтр справа -->
+      <div class="filter-area" [class.open]="showFilter">
+        <button class="toggle-filter" (click)="toggleFilter()">
+          {{ showFilter ? '>' : '<' }}
+        </button>
+        <div class="filter-content" *ngIf="showFilter">
+          <app-requests-filter [initialFilter]="filterState"
+                               (filterChanged)="applyFilter($event)">
+          </app-requests-filter>
+        </div>
+      </div>
+
+    </div>
+    <!-- ALERTS -->
+    <div class="alerts-container">
+      <div *ngFor="let alert of alerts"
+           class="alert"
+           [ngClass]="{'success': alert.type === 'success', 'error': alert.type === 'error'}">
+        {{ alert.message }}
+      </div>
+    </div>
+  </div>
+
+
+</div>

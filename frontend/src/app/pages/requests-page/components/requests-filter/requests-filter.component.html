@@ -1,0 +1,56 @@
+<div class="filter-container">
+  <h4 class="filter-title">Фильтр заявок</h4>
+  <table class="filter-table">
+    <tr>
+      <td>Дата от:</td>
+      <td>
+        <input type="datetime-local" [(ngModel)]="fromDateStr">
+      </td>
+    </tr>
+    <tr>
+      <td>Дата до:</td>
+      <td>
+        <input type="datetime-local" [(ngModel)]="toDateStr">
+      </td>
+    </tr>
+    <tr>
+      <td>Заявитель:</td>
+      <td>
+        <div class="requester-input">
+          <input type="text"
+                 [(ngModel)]="newRequester"
+                 (keydown)="handleKeyDown($event)"
+                 placeholder="Заявитель">
+          <button type="button" class="add-button" (click)="addRequester()">+</button>
+        </div>
+      </td>
+    </tr>
+    <tr *ngIf="filter.requesters?.length">
+      <td colspan="2">
+        <div class="selected-requesters">
+          <span *ngFor="let r of filter.requesters" class="selected-item">
+            {{ r }}
+            <button type="button" (click)="removeRequester(r)">×</button>
+          </span>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>Поиск:</td>
+      <td>
+        <input type="text" [(ngModel)]="filter.searchText" placeholder="текст или имя">
+      </td>
+    </tr>
+    <tr>
+      <td>Только критические:</td>
+      <td>
+        <input type="checkbox" [(ngModel)]="filter.criticalOnly">
+      </td>
+    </tr>
+  </table>
+
+  <div class="filter-buttons">
+    <button (click)="applyFilter()">Применить</button>
+    <button (click)="clearFilter()">Очистить</button>
+  </div>
+</div>

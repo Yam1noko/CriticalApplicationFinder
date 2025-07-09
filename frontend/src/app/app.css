@@ -1,0 +1,65 @@
+/* HEADER: всегда сверху, на всю ширину */
+.app-header {
+  display: flex;
+  align-items: center;
+  background-color: #374151;
+  color: #ffffff;
+  height: 48px;
+  padding: 0 8px; /* минимальный отступ слева и справа */
+  box-sizing: border-box;
+}
+
+/* Левая часть хедера с логотипом и кнопкой */
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Логотипы — уменьшенный размер и одинаковые пропорции */
+.logo-icon {
+  height: 24px; /* уменьшенный размер */
+  width: auto;
+  transition: opacity 0.3s ease;
+  margin: 0; /* убираем случайные внешние отступы */
+}
+
+/* Кнопка меню — без лишних отступов */
+.menu-toggle {
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 22px;
+  cursor: pointer;
+  transition: margin 0.3s ease;
+  padding: 0;
+}
+
+  .menu-toggle.collapsed {
+    margin-left: 8px; /* ближе в свернутом виде */
+  }
+
+  .menu-toggle.expanded {
+    margin-left: 40px; /* отступ когда sidebar раскрыт */
+  }
+
+/* BODY: под header */
+.app-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  max-width: 100%;
+  height: calc(100vh - 48px);
+}
+
+app-sidebar-menu {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.app-content {
+  flex: 1;
+  background-color: #f3f4f6;
+  overflow: auto;
+  padding: 16px;
+}

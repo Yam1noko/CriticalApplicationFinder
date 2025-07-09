@@ -1,0 +1,3 @@
+C:\Users\Stepan\Desktop\AngularProject10\obj\Debug\AngularProject10.esproj.CoreCompileInputs.cache
+C:\Users\Jason\Documents\SummerProject\IaAbobus\AngularProject10\obj\Debug\AngularProject10.esproj.CoreCompileInputs.cache
+C:\Users\Jason\Documents\SummerProject\CriticalApplicationFinder\frontend\obj\Debug\AngularProject10.esproj.CoreCompileInputs.cache

@@ -1,0 +1,48 @@
+<div class="notification-settings">
+  <div *ngIf="loading">Загрузка...</div>
+
+  <div *ngIf="!loading">
+
+    <!-- Перечень адресов -->
+    <div class="section">
+      <h4>Перечень адресов электронной почты</h4>
+      <ul class="email-list">
+        <li *ngFor="let email of settings.emails">
+          <span>{{ email }}</span>
+          <button (click)="removeEmail(email)">Удалить</button>
+        </li>
+      </ul>
+      <input [(ngModel)]="newEmail"
+             placeholder="Новый email"
+             (keyup.enter)="addEmail()" />
+      <button (click)="addEmail()">Добавить email</button>
+    </div>
+
+    <!-- Шаблон письма -->
+    <div class="section">
+      <h4>Шаблон тела письма</h4>
+
+      <!-- Подсказка доступных ключей -->
+      <div class="template-hints" ngNonBindable>
+        Доступные ключи:
+        <span class="hint">&#123;&#123; id &#125;&#125;</span>,
+        <span class="hint">&#123;&#123; title &#125;&#125;</span>,
+        <span class="hint">&#123;&#123; shortDescr &#125;&#125;</span>,
+        <span class="hint">&#123;&#123; description &#125;&#125;</span>,
+        <span class="hint">&#123;&#123; creationDate &#125;&#125;</span>,
+        <span class="hint">&#123;&#123; clientName &#125;&#125;</span>
+      </div>
+
+      <textarea [(ngModel)]="settings.template" rows="6"></textarea>
+      <button (click)="saveTemplate()">Сохранить шаблон</button>
+
+</div>
+
+<!-- Блок для уведомлений -->
+<div class="alerts-container">
+  <div *ngFor="let alert of alerts"
+       class="alert"
+       [ngClass]="{'success': alert.type === 'success', 'error': alert.type === 'error'}">
+    {{ alert.message }}
+  </div>
+</div>

@@ -1,0 +1,70 @@
+<div class="rule-container">
+  <h3>Управление правилами загрузки заявок</h3>
+
+  <div *ngIf="loading">Загрузка...</div>
+
+  <div *ngIf="!loading">
+
+    <!-- Добавление нового правила -->
+    <div class="new-rule-form">
+      <input [(ngModel)]="newRule.name" placeholder="Имя правила" />
+      <label>
+        Активно
+        <input type="checkbox" [(ngModel)]="newRule.isActive" />
+      </label>
+      <label>
+        Использовать AND
+        <input type="checkbox" [(ngModel)]="newRule.useAnd" />
+      </label>
+      <textarea [(ngModel)]="newRuleFullNames" placeholder="Список отправителей через запятую"></textarea>
+      <textarea [(ngModel)]="newRuleSubstrings" placeholder="Ключевые подстроки через запятую"></textarea>
+      <button (click)="addRule()">Добавить правило</button>
+    </div>
+
+    <!-- Таблица правил -->
+    <table>
+      <thead>
+        <tr>
+          <th>Имя</th>
+          <th>Активно</th>
+          <th>Исп. AND</th>
+          <th>Отправители</th>
+          <th>Ключевые слова</th>
+          <th>Действия</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let rule of rules">
+          <td>
+            <input [(ngModel)]="rule.name" />
+          </td>
+          <td>
+            <input type="checkbox" [(ngModel)]="rule.isActive" />
+          </td>
+          <td>
+            <input type="checkbox" [(ngModel)]="rule.useAnd" />
+          </td>
+          <td>
+            <textarea [(ngModel)]="rule.ruleFullNamesStr"></textarea>
+          </td>
+          <td>
+            <textarea [(ngModel)]="rule.ruleSubstringsStr"></textarea>
+          </td>
+          <td>
+            <button (click)="updateRule(rule)">Сохранить</button>
+            <button (click)="deleteRule(rule.id!)">Удалить</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Алерты -->
+<div class="alerts-container">
+  <div *ngFor="let alert of alerts"
+       class="alert"
+       [ngClass]="{'success': alert.type === 'success', 'error': alert.type === 'error'}">
+    {{ alert.message }}
+  </div>
+</div>
