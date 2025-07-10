@@ -5,6 +5,7 @@ import {
   OnDestroy,
   QueryList,
   ViewChildren,
+  ViewChild,
   ElementRef
 } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
@@ -23,7 +24,7 @@ export class RequestsTableComponent implements OnInit, AfterViewInit, OnDestroy 
   allTickets: Ticket[] = [];
   tickets: Ticket[] = [];
   displayedTickets: Ticket[] = [];
-
+  
   pageSize = 50;
   currentPage = 1;
   totalItems = 0;
@@ -123,10 +124,19 @@ export class RequestsTableComponent implements OnInit, AfterViewInit, OnDestroy 
     setTimeout(() => this.measureDescriptions(), 0);
   }
 
+  @ViewChild('tableArea') tableAreaRef!: ElementRef;
+
+  private scrollTableToTop(): void {
+    if (this.tableAreaRef?.nativeElement) {
+      this.tableAreaRef.nativeElement.scrollTop = 0;
+    }
+  }
+
   goToPage(page: number): void {
     if (page < 1 || page > this.totalPages) return;
     this.currentPage = page;
     this.updateDisplayedTickets();
+    this.scrollTableToTop();
   }
 
   nextPage(): void {
@@ -264,4 +274,5 @@ export class RequestsTableComponent implements OnInit, AfterViewInit, OnDestroy 
   min(a: number, b: number): number {
     return Math.min(a, b);
   }
+
 }
