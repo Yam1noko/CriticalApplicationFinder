@@ -1,6 +1,7 @@
 ﻿namespace backend.Services
 {
     using AutoMapper;
+    using backend.BackgroundServices;
     using backend.DataTransferObject;
 
     using backend.Models.External;
@@ -15,14 +16,16 @@
         private readonly IMapper _mapper;
         private readonly IRuleService _ruleService;
         private readonly INotificationService _notificationService;
+        private readonly ILogger<RequestService> _logger;
 
-        public RequestService(IRequestRepository repo, IExternalRequestRepository externalRepo, IMapper mapper, IRuleService ruleService, INotificationService notificationService)
+        public RequestService(IRequestRepository repo, IExternalRequestRepository externalRepo, IMapper mapper, IRuleService ruleService, INotificationService notificationService, ILogger<RequestService> logger)
         {
             _internalRepo = repo;
             _externalRepo = externalRepo;
             _mapper = mapper;
             _ruleService = ruleService;
             _notificationService = notificationService;
+            _logger = logger;
         }
 
         public async Task<IEnumerable<RequestDto>> GetRequestsInRange(DateTime from, DateTime to)
@@ -57,7 +60,14 @@
                     newInternal = await _ruleService.IsRequestCritical(newInternal);
                     if (newInternal.isCritical == true)
                     {
-                        await _notificationService.SendEmail(newInternal);
+                        try
+                        {
+                            await _notificationService.SendEmail(newInternal);
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogWarning(ex, "Ошибка при отправке email, выполнение продолжается");
+                        }
                     }
                     await _internalRepo.Add(newInternal);
                     hasChanges = true;

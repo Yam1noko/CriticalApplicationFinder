@@ -5,6 +5,7 @@ using backend.Models.Internal;
 using backend.Options;
 using backend.Repositories;
 using backend.Services;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace backend.BackgroundServices
@@ -72,7 +73,14 @@ namespace backend.BackgroundServices
                     newInternal = await ruleService.IsRequestCritical(newInternal);
                     if (newInternal.isCritical == true)
                     {
-                        await notificationService.SendEmail(newInternal);
+                        try
+                        {
+                            await notificationService.SendEmail(newInternal);
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogWarning(ex, "Ошибка при отправке email");
+                        }
                     }
                     await internalRepo.Add(newInternal);
                     hasChanges = true;

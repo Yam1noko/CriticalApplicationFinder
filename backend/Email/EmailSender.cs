@@ -1,7 +1,8 @@
 ﻿using backend.Models.Internal;
-using System.Net;
-using System.Net.Mail;
 using Scriban;
+using MailKit.Net.Smtp;
+using MailKit.Security;
+using MimeKit;
 
 namespace backend.Email
 {
@@ -28,29 +29,34 @@ namespace backend.Email
             var template = Template.Parse(templateText);
             var body = template.Render(new {
                 seviceId = request.ServiceId,
-                id = request.Id, 
+                id = request.Id,
                 title = request.Title,
                 creationDate = request.CreationDate,
                 clientName = request.ClientName,
                 shortDescr = request.ShortDescr,
-                description = request.DescriptionRtf4096
+                description = request.DescriptionRtf4096,
+                link = GenerateLink(request.Id)
             });
 
             var from = fromOverride ?? _from;
-            var message = new MailMessage(from, recipient, subject, body)
-            {
-                IsBodyHtml = true
-            };
+            var message = new MimeMessage();
+            message.From.Add(MailboxAddress.Parse(from));
+            message.To.Add(MailboxAddress.Parse(recipient));
+            message.Subject = subject;
+            message.Body = new TextPart("html") { Text = body };
 
-            using var client = new SmtpClient(_host, _port)
-            {
-                Credentials = new NetworkCredential(_username, _password),
-                EnableSsl = true
-            };
-
-            await client.SendMailAsync(message);
+            using var client = new SmtpClient();
+            await client.ConnectAsync(_host, _port, SecureSocketOptions.StartTls); 
+            await client.AuthenticateAsync(_username, _password);
+            await client.SendAsync(message);
+            await client.DisconnectAsync(true);
         }
 
+        private string GenerateLink(string id)
+        {
+            var cleanId = (id ?? string.Empty).Replace(" ", string.Empty);
+            return $"https://sd.fesco.com/sd/operator/#uuid:serviceCall${cleanId}";
+        }
     }
 
 }

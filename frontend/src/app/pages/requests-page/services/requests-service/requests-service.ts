@@ -27,7 +27,7 @@ export class RequestsService {
       requester: item.clientName,
       shortDescr: item.shortDescr,
       description: item.descriptionRtf4096,
-      link: this.generateLink(item.title),
+      link: this.generateLink(item.id),
       createdAt: new Date(item.creationDate),
       critical: item.isCritical,
       isExpanded: false
