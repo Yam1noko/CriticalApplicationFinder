@@ -1,0 +1,145 @@
+.settings {
+  padding: 8px;
+}
+
+.toolbar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+  .toolbar button {
+    padding: 6px 12px;
+    border: 1px solid #d1d5db;
+    background: #fff;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .toolbar .secondary {
+    background: #f9fafb;
+  }
+
+.card {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  background: #fff;
+  overflow: hidden;
+}
+
+  .card header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 8px 10px;
+    cursor: pointer;
+  }
+
+    .card header h3 {
+      margin: 0;
+      font-size: 15px;
+    }
+
+  .card .body {
+    padding: 10px;
+    display: grid;
+    gap: 10px;
+  }
+
+label {
+  display: grid;
+  gap: 6px;
+}
+
+  label > span {
+    color: #374151;
+    font-size: 13px;
+  }
+
+input[type="text"], input[type="password"], input[type="email"], input[type="number"] {
+  padding: 8px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  width: 100%;
+  box-sizing: border-box;
+  background: #fff;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 10px;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0,1fr));
+  gap: 10px;
+}
+
+@media (max-width: 900px) {
+  .grid-2, .grid-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.emails {
+  display: grid;
+  gap: 8px;
+}
+
+  .emails .label {
+    color: #374151;
+    font-size: 13px;
+  }
+
+.emails-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  background: #e0f2fe;
+  border: 1px solid #93c5fd;
+  color: #1e40af;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+}
+
+  .chip button {
+    margin-left: 6px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #1e40af;
+    font-weight: bold;
+  }
+
+.email-adder {
+  display: flex;
+  gap: 8px;
+}
+
+  .email-adder input {
+    flex: 1;
+  }
+
+.json {
+  margin: 0;
+  padding: 10px;
+  background: #0b1020;
+  color: #c0e6ff;
+  border-radius: 8px;
+  overflow: auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12px;
+  max-height: 280px;
+}

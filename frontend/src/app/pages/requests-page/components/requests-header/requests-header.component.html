@@ -1,0 +1,40 @@
+<header class="requests-header">
+  <div class="left">
+    <!-- Логотип -->
+    <img class="logo" src="assets/images/logo-expanded.png" alt="Company logo" />
+
+    <!-- Строка поиска + кнопка фильтра -->
+    <div class="search-wrap">
+      <input type="text"
+             placeholder="Поиск…"
+             [(ngModel)]="searchText"
+             (ngModelChange)="onSearchInput($event)"
+             (focus)="closeFilter()"
+             (click)="closeFilter()" />
+
+      <!-- Крестик для очистки — показываем только когда есть текст -->
+      <button class="clear-btn"
+              type="button"
+              *ngIf="searchText && searchText.length > 0"
+              (click)="clearSearch()"
+              aria-label="Очистить поиск">
+        ×
+      </button>
+
+      <!-- Кнопка открытия фильтра -->
+      <button class="filter-btn" type="button" (click)="toggleDropdown()" aria-label="Фильтр">
+        <svg viewBox="0 0 24 24" class="icon">
+          <path d="M3 4h18l-7 8v8l-4-2v-6z" fill="currentColor" />
+        </svg>
+      </button>
+
+      <!-- Выпадающий фильтр -->
+      <div class="dropdown-filter" *ngIf="showDropdown">
+        <app-requests-filter [initialFilter]="filterState"
+                             (filterChanged)="onFilterChanged($event)"
+                             (closed)="closeFilter()">
+        </app-requests-filter>
+      </div>
+    </div>
+  </div>
+</header>
