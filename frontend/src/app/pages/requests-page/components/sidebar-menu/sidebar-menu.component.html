@@ -1,12 +1,36 @@
-<div class="sidebar" [class.expanded]="isExpanded">
-  <nav class="sidebar-nav">
-    <button (click)="select('Rule')">
-      📖
-      <span *ngIf="isExpanded">Правила и условия</span>
-    </button>
-    <button (click)="select('Notifications')">
-      📘
-      <span *ngIf="isExpanded">Уведомления</span>
-    </button>
-  </nav>
+<!-- Обёртка 72px, не двигает макет -->
+<div class="sidebar-hover" aria-label="Боковое меню">
+  <!-- «Летающая» панель: шире, чем 72px, и раскрывается ПОВЕРХ -->
+  <div class="sidebar-flyout">
+    <nav class="sidebar-nav">
+      <button type="button" (click)="select('Rule')" title="Правила и условия">
+        <!-- book -->
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M18 2H8a4 4 0 0 0-4 4v12a3 3 0 0 0 3 3h11a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1Zm-1 16H7a1 1 0 0 1-1-1V6a2 2 0 0 1 2-2h9v14Z"
+                fill="currentColor" /> <!-- Да, я так храню иконки, костыль? костыль. -->
+        </svg>
+        <span class="item-label">Правила и условия</span>
+      </button>
+
+      <button type="button" (click)="select('Notifications')" title="Уведомления">
+        <!-- inbox -->
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            d="M2 6c0-1.1.9-2 2-2h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6Zm2 0v.01L12 11l8-4.99V6H4Zm16 12V8l-8 5-8-5v10h16Z"
+            fill="currentColor" />
+        </svg>
+        <span class="item-label">Уведомления</span>
+      </button>
+
+      <button type="button" (click)="select('Settings')" title="Настройки">
+        <!-- settings -->
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            d="M19.14 12.94a7.5 7.5 0 0 0 0-1.88l2.11-1.65a.5.5 0 0 0 .12-.64l-2-3.46a.5.5 0 0 0-.6-.22l-2.49 1a7.53 7.53 0 0 0-1.63-.95l-.38-2.65A.5.5 0 0 0 13.8 2h-3.6a.5.5 0 0 0-.49.41L9.33 5.06a7.53 7.53 0 0 0-1.63.95l-2.49-1a.5.5 0 0 0-.6.22l-2 3.46a.5.5 0 0 0 .12.64L4.86 11a7.5 7.5 0 0 0 0 1.88l-2.11 1.65a.5.5 0 0 0-.12.64l2 3.46a.5.5 0 0 0 .6.22l2.49-1c.5.38 1.05.7 1.63.95l.38 2.65a.5.5 0 0 0 .49.41h3.6a.5.5 0 0 0 .49-.41l.38-2.65c.58-.25 1.13-.57 1.63-.95l2.49 1a.5.5 0 0 0 .6-.22l2-3.46a.5.5 0 0 0-.12-.64ZM12 15.5A3.5 3.5 0 1 1 15.5 12 3.5 3.5 0 0 1 12 15.5Z"
+            fill="currentColor" />
+        </svg>
+        <span class="item-label">Настройки</span>
+      </button>
+    </nav>
+  </div>
 </div>

@@ -1,47 +1,86 @@
 <div class="rule-container">
-  <h3>Управление правилами загрузки заявок</h3>
+  <h3>Добавить правило</h3>
 
-  <div *ngIf="loading">Загрузка...</div>
+  <div *ngIf="loading">Загрузка…</div>
 
   <div *ngIf="!loading">
-
-    <!-- Добавление нового правила -->
-    <div class="new-rule-form">
-      <input [(ngModel)]="newRule.name" placeholder="Имя правила" />
-      <label>
-        Активно
-        <input type="checkbox" [(ngModel)]="newRule.isActive" />
+    <!-- ФОРМА ДОБАВЛЕНИЯ -->
+    <form class="new-rule" (ngSubmit)="addRule()">
+      <label class="block">
+        <span>Имя</span>
+        <input [(ngModel)]="newRule.name" name="name" type="text" />
       </label>
-      <label>
-        Использовать AND
-        <input type="checkbox" [(ngModel)]="newRule.useAnd" />
-      </label>
-      <textarea [(ngModel)]="newRuleFullNames" placeholder="Список отправителей через запятую"></textarea>
-      <textarea [(ngModel)]="newRuleSubstrings" placeholder="Ключевые подстроки через запятую"></textarea>
-      <button (click)="addRule()">Добавить правило</button>
-    </div>
 
-    <!-- Таблица правил -->
-    <table>
+      <div class="row flags">
+        <label class="checkbox">
+          <input type="checkbox" [(ngModel)]="newRule.isActive" name="active" />
+          <span>Активно</span>
+        </label>
+        <label class="checkbox">
+          <input type="checkbox" [(ngModel)]="newRule.useAnd" name="useAnd" />
+          <span>Исп. AND</span>
+        </label>
+      </div>
+
+      <label class="block">
+        <span>Отправители</span>
+        <input [(ngModel)]="newRuleFullNames"
+               name="senders"
+               type="text"
+               placeholder="user@mail.com, support@…" />
+        <small class="hint">через запятую</small>
+      </label>
+
+      <label class="block">
+        <span>Ключевые слова</span>
+        <input [(ngModel)]="newRuleSubstrings"
+               name="substrings"
+               type="text"
+               placeholder="ошибка, срочно, недоступно…" />
+        <small class="hint">через запятую</small>
+      </label>
+
+      <div class="actions">
+        <button class="btn primary" type="submit">Сохранить</button>
+        <button class="btn" type="button" (click)="clearNew()">Очистить</button>
+      </div>
+    </form>
+
+    <!-- ТАБЛИЦА ПРАВИЛ -->
+    <table class="rules-table">
+      <colgroup>
+        <col style="width:56px" />    <!-- статус -->
+        <col style="width:18%" />     <!-- имя -->
+        <col style="width:90px" />    <!-- AND -->
+        <col style="width:auto" />    <!-- отправители (больше места) -->
+        <col style="width:auto" />    <!-- ключевые слова (больше места) -->
+        <col style="width:96px" />    <!-- действия -->
+      </colgroup>
+
       <thead>
         <tr>
+          <th>Статус</th>
           <th>Имя</th>
-          <th>Активно</th>
           <th>Исп. AND</th>
           <th>Отправители</th>
           <th>Ключевые слова</th>
           <th>Действия</th>
         </tr>
       </thead>
+
       <tbody>
         <tr *ngFor="let rule of rules">
+          <td class="status-cell">
+            <button class="status-dot"
+                    [class.on]="rule.isActive"
+                    [class.off]="!rule.isActive"
+                    (click)="rule.isActive = !rule.isActive"
+                    title="Переключить активно"></button>
+          </td>
           <td>
             <input [(ngModel)]="rule.name" />
           </td>
-          <td>
-            <input type="checkbox" [(ngModel)]="rule.isActive" />
-          </td>
-          <td>
+          <td class="center">
             <input type="checkbox" [(ngModel)]="rule.useAnd" />
           </td>
           <td>
@@ -50,9 +89,19 @@
           <td>
             <textarea [(ngModel)]="rule.ruleSubstringsStr"></textarea>
           </td>
-          <td>
-            <button (click)="updateRule(rule)">Сохранить</button>
-            <button (click)="deleteRule(rule.id!)">Удалить</button>
+          <td class="actions-cell">
+            <button class="icon-btn" title="Сохранить" (click)="updateRule(rule)">
+              <!-- save icon -->
+              <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                <path d="M5 3h11l5 5v13H5V3zm2 2v4h8V5H7zm0 14h10v-7H7v7z" />
+              </svg>
+            </button>
+            <button class="icon-btn danger" title="Удалить" (click)="deleteRule(rule.id!)">
+              <!-- delete icon -->
+              <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                <path d="M6 7h12l-1 14H7L6 7zm3-4h6l1 2H8l1-2z" />
+              </svg>
+            </button>
           </td>
         </tr>
       </tbody>
@@ -60,7 +109,7 @@
   </div>
 </div>
 
-<!-- Алерты -->
+<!-- АЛЕРТЫ -->
 <div class="alerts-container">
   <div *ngFor="let alert of alerts"
        class="alert"

@@ -1,5 +1,4 @@
-<div class="filter-container">
-  <h4 class="filter-title">Фильтр заявок</h4>
+<div class="filter-container dropdown-filter" (click)="$event.stopPropagation()">
   <table class="filter-table">
     <tr>
       <td>Дата от:</td>
@@ -13,34 +12,64 @@
         <input type="datetime-local" [(ngModel)]="toDateStr">
       </td>
     </tr>
+
+    <!-- Заявитель -->
     <tr>
       <td>Заявитель:</td>
       <td>
-        <div class="requester-input">
+        <div class="chips-input">
           <input type="text"
+                 placeholder="имя[; ,] ... и Enter"
                  [(ngModel)]="newRequester"
-                 (keydown)="handleKeyDown($event)"
-                 placeholder="Заявитель">
-          <button type="button" class="add-button" (click)="addRequester()">+</button>
+                 (keydown)="onChipsKey($event, 'requester')">
+          <div class="chips-list" *ngIf="filter.requesters?.length">
+            <span class="selected-item" *ngFor="let r of filter.requesters">
+              {{ r }}
+              <button type="button" (click)="removeRequester(r)">×</button>
+            </span>
+          </div>
         </div>
       </td>
     </tr>
-    <tr *ngIf="filter.requesters?.length">
-      <td colspan="2">
-        <div class="selected-requesters">
-          <span *ngFor="let r of filter.requesters" class="selected-item">
-            {{ r }}
-            <button type="button" (click)="removeRequester(r)">×</button>
-          </span>
-        </div>
-      </td>
-    </tr>
+
+    <!-- Тема -->
     <tr>
-      <td>Поиск:</td>
+      <td>Тема:</td>
       <td>
-        <input type="text" [(ngModel)]="filter.searchText" placeholder="текст или имя">
+        <div class="chips-input">
+          <input type="text"
+                 placeholder="фразы темы[; ,] ... и Enter"
+                 [(ngModel)]="newSubject"
+                 (keydown)="onChipsKey($event, 'subject')">
+          <div class="chips-list" *ngIf="subjectWords.length">
+            <span class="selected-item" *ngFor="let s of subjectWords">
+              {{ s }}
+              <button type="button" (click)="removeSubject(s)">×</button>
+            </span>
+          </div>
+        </div>
       </td>
     </tr>
+
+    <!-- Содержит слова -->
+    <tr>
+      <td>Содержит слова:</td>
+      <td>
+        <div class="chips-input">
+          <input type="text"
+                 placeholder="слово[; ,] ... и Enter"
+                 [(ngModel)]="newContains"
+                 (keydown)="onChipsKey($event, 'contains')">
+          <div class="chips-list" *ngIf="containsWords.length">
+            <span class="selected-item" *ngFor="let w of containsWords">
+              {{ w }}
+              <button type="button" (click)="removeContains(w)">×</button>
+            </span>
+          </div>
+        </div>
+      </td>
+    </tr>
+
     <tr>
       <td>Только критические:</td>
       <td>
@@ -50,7 +79,14 @@
   </table>
 
   <div class="filter-buttons">
-    <button (click)="applyFilter()">Применить</button>
-    <button (click)="clearFilter()">Очистить</button>
+    <button type="button" (click)="applyFilter()">Применить</button>
+    <button type="button" (click)="clearFilter()">Очистить</button>
   </div>
-</div>
+
+  <div class="alerts-container">
+    <div *ngFor="let alert of alerts"
+         class="alert"
+         [ngClass]="{'success': alert.type === 'success', 'error': alert.type === 'error'}">
+      {{ alert.message }}
+    </div>
+  </div>

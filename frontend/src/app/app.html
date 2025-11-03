@@ -1,46 +1,38 @@
 <div class="app-layout">
-  <!-- Header -->
-  <header class="app-header">
-    <div class="header-left">
-      <img *ngIf="!isSidebarExpanded"
-           class="logo-icon"
-           src="assets/images/logo-collapsed.png"
-           alt="Logo collapsed" />
+  <!-- Верхняя панель -->
+  <app-requests-header [externalFilter]="headerFilter"
+                       (filterChanged)="onHeaderFilter($event)">
+  </app-requests-header>
 
-      <img *ngIf="isSidebarExpanded"
-           class="logo-icon"
-           src="assets/images/logo-expanded.png"
-           alt="Logo expanded" />
-
-      <button class="menu-toggle"
-              [class.collapsed]="!isSidebarExpanded"
-              [class.expanded]="isSidebarExpanded"
-              (click)="toggleSidebar()">
-        ☰
-      </button>
-    </div>
-  </header>
-
-
-  <!-- Main body with sidebar -->
-  <div class="app-body">
-    <app-sidebar-menu [isExpanded]="isSidebarExpanded"
+  <!-- Контент -->
+  <div class="app-content">
+    <app-sidebar-menu class="sidebar-fixed"
                       (itemSelected)="onSidebarItemSelected($event)">
     </app-sidebar-menu>
 
-    <div class="app-content">
-      <app-requests-table></app-requests-table>
+    <div class="content-main">
+      <app-requests-table #requestsTable
+                          (dateRangeChanged)="onTableDateRange($event)"
+                          (contentFiltersCleared)="onContentFiltersCleared()">
+      </app-requests-table>
     </div>
   </div>
 
-  <!-- Modal -->
-  <app-modal *ngIf="showModal" [title]="modalTitle" (closed)="closeModal()">
+  <!-- Модалка -->
+  <app-modal *ngIf="showModal"
+             [title]="modalTitle"
+             (closed)="closeModal()">
+
     <ng-container *ngIf="modalContent === 'Notifications'">
       <app-notification-settings></app-notification-settings>
     </ng-container>
 
     <ng-container *ngIf="modalContent === 'Rule'">
       <app-rule-management></app-rule-management>
+    </ng-container>
+
+    <ng-container *ngIf="modalContent === 'Settings'">
+      <app-system-settings></app-system-settings>
     </ng-container>
   </app-modal>
 </div>

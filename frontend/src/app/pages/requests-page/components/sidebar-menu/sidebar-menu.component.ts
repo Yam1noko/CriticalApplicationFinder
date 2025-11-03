@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-sidebar-menu',
@@ -7,7 +7,6 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
   styleUrls: ['./sidebar-menu.component.css']
 })
 export class SidebarMenuComponent {
-  @Input() isExpanded = true;
   @Output() itemSelected = new EventEmitter<string>();
 
   select(item: string): void {

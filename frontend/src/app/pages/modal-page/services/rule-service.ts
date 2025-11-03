@@ -2,23 +2,24 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { Rule } from '../models/rule';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RuleService {
-  private apiUrl = 'http://localhost:5000/api/rules';
+  private baseUrl = environment.apiBaseUrl + '/api/rules';
 
   constructor(private http: HttpClient) { }
   getRules(): Observable<Rule[]> {
-    return this.http.get<any[]>(this.apiUrl).pipe(
+    return this.http.get<any[]>(this.baseUrl).pipe(
       map(data => data.map(item => this.fromServer(item)))
     );
   }
 
   createRule(rule: Rule): Observable<Rule | null> {
     const body = this.toServerFormat(rule, true);
-    return this.http.post<any>(this.apiUrl, body).pipe(
+    return this.http.post<any>(this.baseUrl, body).pipe(
       map(item => {
         if (!item) {
           console.warn('Сервер вернул null при создании правила');
@@ -32,7 +33,7 @@ export class RuleService {
   updateRule(rule: Rule): Observable<Rule | null> {
     if (!rule.id) throw new Error('Rule must have an id');
     const body = this.toServerFormat(rule, false);
-    return this.http.put<any>(`${this.apiUrl}/${rule.id}`, body).pipe(
+    return this.http.put<any>(`${this.baseUrl}/${rule.id}`, body).pipe(
       map(item => {
         if (!item) {
           console.warn('Сервер вернул null при обновлении правила');
@@ -44,7 +45,7 @@ export class RuleService {
   }
 
   deleteRule(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+    return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
 
   private ensureStringArray(value: any): string[] {

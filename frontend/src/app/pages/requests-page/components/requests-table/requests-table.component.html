@@ -2,18 +2,65 @@
   <div class="content-area">
     <div class="main-with-filter">
 
-      <!-- Таблица -->
+      <!-- ОБЛАСТЬ ТАБЛИЦЫ -->
       <div class="table-area" #tableArea>
 
         <!-- Панель управления -->
         <div class="table-controls sticky-controls">
           <div class="left-controls">
             <button (click)="refreshData()">Обновить</button>
+
             <label>
               <input type="checkbox" [(ngModel)]="autoRefresh" (change)="toggleAutoRefresh()">
               Автообновление
             </label>
+
+            <!-- Пилюля периода -->
+            <div class="period-pill-wrap" (click)="togglePresetMenu($event)">
+              <button class="period-pill" type="button">
+                <span class="check">✓</span>
+                <span class="label">{{ currentPeriodLabel }}</span>
+                <span class="caret">▾</span>
+              </button>
+
+              <!-- Чип «Фильтр применён» — только для содержательных фильтров -->
+              <span *ngIf="filterApplied" class="applied-chip">
+                Фильтр применён
+                <button type="button" class="chip-x"
+                        (click)="$event.stopPropagation(); clearContentFilters()"
+                        aria-label="Очистить фильтр">
+                  ×
+                </button>
+              </span>
+
+              <!-- Меню пресетов -->
+              <ul class="period-menu" *ngIf="showPresetMenu" (click)="$event.stopPropagation()">
+                <li *ngFor="let p of presets" (click)="selectPreset(p)">
+                  {{ p.label }}
+                </li>
+                <li class="divider"></li>
+                <li (click)="openCustomPopup()">Другой период…</li>
+              </ul>
+
+              <!-- Попап «Другой период…» -->
+              <div class="custom-range-popover" *ngIf="showCustomPopup" (click)="$event.stopPropagation()">
+                <div class="crp-row">
+                  <input type="date" [(ngModel)]="customFromStr" placeholder="Начальная дата" />
+                  <input type="date" [(ngModel)]="customToStr" placeholder="Конечная дата" />
+                </div>
+                <div class="crp-actions">
+                  <button class="btn-secondary" type="button" (click)="closeCustomPopup()">Отмена</button>
+                  <button class="btn-primary"
+                          type="button"
+                          [disabled]="isApplyDisabled"
+                          (click)="applyCustomRange()">
+                    Применить
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
+
           <div class="pagination-controls">
             <button (click)="prevPage()" [disabled]="currentPage === 1">&lt;</button>
             <span>
@@ -23,47 +70,35 @@
           </div>
         </div>
 
-        <!-- LOADING OVERLAY -->
+        <!-- LOADING -->
         <div class="loading-overlay" *ngIf="loading">
-          <div class="loading-box">
-            Идёт загрузка данных...
-          </div>
+          <div class="loading-box">Идёт загрузка данных...</div>
         </div>
 
-        <!-- Таблица данных -->
+        <!-- Таблица -->
         <table>
           <thead>
             <tr>
-              <th (click)="sortBy('ticketNumber')">
-                Номер заявки {{ getSortIndicator('ticketNumber') }}
-              </th>
-              <th (click)="sortBy('requester')">
-                Заявитель {{ getSortIndicator('requester') }}
-              </th>
-              <th (click)="sortBy('description')">
-                Текст заявки {{ getSortIndicator('description') }}
-              </th>
-              <th (click)="sortBy('link')">
-                Ссылка на заявку {{ getSortIndicator('link') }}
-              </th>
-              <th (click)="sortBy('createdAt')">
-                Время создания {{ getSortIndicator('createdAt') }}
-              </th>
+              <th (click)="sortBy('ticketNumber')">Номер заявки {{ getSortIndicator('ticketNumber') }}</th>
+              <th (click)="sortBy('requester')">Заявитель {{ getSortIndicator('requester') }}</th>
+              <th (click)="sortBy('description')">Текст заявки {{ getSortIndicator('description') }}</th>
+              <th (click)="sortBy('link')">Ссылка на заявку {{ getSortIndicator('link') }}</th>
+              <th (click)="sortBy('createdAt')">Время создания {{ getSortIndicator('createdAt') }}</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let ticket of displayedTickets" [class.critical]="ticket.critical">
               <td>{{ ticket.ticketNumber }}</td>
-              <td>{{ ticket.requester }}</td>
+              <td class="requester-cell">{{ ticket.requester }}</td>
+
+              <!-- Тема + черта + тело -->
               <td class="text-cell">
-                <div class="short-desc">
-                  {{ ticket.shortDescr }}
-                </div>
-                <div class="description-wrapper" [class.collapsed]="!ticket.isExpanded && ticket.isTruncated">
-                  <div #descriptionContent
-                       class="description-content"
-                       [innerHTML]="getDisplayDescription(ticket)">
-                  </div>
+                <div class="request-title">{{ ticket.shortDescr }}</div>
+                <hr class="request-divider" />
+                <div class="description-wrapper"
+                     [class.collapsed]="ticket.isTruncated && !ticket.isExpanded">
+                  <div #descriptionContent class="description-content request-body"
+                       [innerHTML]="getDisplayDescription(ticket)"></div>
                 </div>
                 <span *ngIf="ticket.isTruncated"
                       class="toggle-link"
@@ -71,36 +106,23 @@
                   {{ ticket.isExpanded ? 'Скрыть' : '... Читать далее' }}
                 </span>
               </td>
-              <td>
-                <a *ngIf="ticket.link" [href]="ticket.link" target="_blank">Перейти</a>
-              </td>
+
+              <td><a *ngIf="ticket.link" [href]="ticket.link" target="_blank">Перейти</a></td>
               <td>{{ ticket.createdAt | date:'d/M/yy, HH:mm' }}</td>
             </tr>
           </tbody>
         </table>
       </div>
-      <!-- Фильтр справа -->
-      <div class="filter-area" [class.open]="showFilter">
-        <button class="toggle-filter" (click)="toggleFilter()">
-          {{ showFilter ? '>' : '<' }}
-        </button>
-        <div class="filter-content" *ngIf="showFilter">
-          <app-requests-filter [initialFilter]="filterState"
-                               (filterChanged)="applyFilter($event)">
-          </app-requests-filter>
+
+      <!-- АЛЕРТЫ -->
+      <div class="alerts-container">
+        <div *ngFor="let alert of alerts"
+             class="alert"
+             [ngClass]="{'success': alert.type === 'success', 'error': alert.type === 'error'}">
+          {{ alert.message }}
         </div>
       </div>
 
     </div>
-    <!-- ALERTS -->
-    <div class="alerts-container">
-      <div *ngFor="let alert of alerts"
-           class="alert"
-           [ngClass]="{'success': alert.type === 'success', 'error': alert.type === 'error'}">
-        {{ alert.message }}
-      </div>
-    </div>
   </div>
-
-
 </div>

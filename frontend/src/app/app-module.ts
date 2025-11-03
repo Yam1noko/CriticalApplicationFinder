@@ -11,17 +11,20 @@ import { Modal } from './pages/modal-page/modal/modal';
 import { RuleManagementComponent } from './pages/modal-page/components/rule-management/rule-management.component';
 import { NotificationSettingsComponent } from './pages/modal-page/components/notification-settings/notification-settings.component';
 import { HttpClientModule } from '@angular/common/http';
+import { RequestsHeaderComponent } from './pages/requests-page/components/requests-header/requests-header.component';
+import { SystemSettingsComponent } from './pages/modal-page/components/system-settings/system-settings.component';
 
 @NgModule({
   declarations: [
     App,
     RequestsTableComponent,
+    RequestsHeaderComponent,
     RequestsFilterComponent,
     SidebarMenuComponent,
     Modal,
     RuleManagementComponent,
+    SystemSettingsComponent,
     NotificationSettingsComponent,
-    
   ],
   imports: [
     BrowserModule,

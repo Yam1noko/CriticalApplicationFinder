@@ -3,7 +3,6 @@ import { Rule } from '../../models/rule';
 import { RuleService } from '../../services/rule-service';
 import { Alert } from '../../../models/alert.model';
 
-
 @Component({
   selector: 'app-rule-management',
   standalone: false,
@@ -22,9 +21,7 @@ export class RuleManagementComponent implements OnInit {
 
   constructor(private ruleService: RuleService) { }
 
-  ngOnInit(): void {
-    this.loadRules();
-  }
+  ngOnInit(): void { this.loadRules(); }
 
   loadRules(): void {
     this.loading = true;
@@ -47,19 +44,13 @@ export class RuleManagementComponent implements OnInit {
       this.showAlert('Введите имя правила', 'error');
       return;
     }
-
     this.newRule.ruleFullNamesStr = this.newRuleFullNames;
     this.newRule.ruleSubstringsStr = this.newRuleSubstrings;
 
     this.ruleService.createRule(this.newRule).subscribe({
-      next: (createdRule) => {
-        if (createdRule) {
-          this.showAlert('Правило успешно добавлено', 'success');
-        } else {
-          this.showAlert('Правило успешно добавлено', 'success');
-          //this.showAlert('Правило добавлено, но сервер не вернул данные', 'success');
-        }
-        this.resetNewRule();
+      next: () => {
+        this.showAlert('Правило успешно добавлено', 'success');
+        this.clearNew();
         this.loadRules();
       },
       error: (err) => {
@@ -74,15 +65,9 @@ export class RuleManagementComponent implements OnInit {
       this.showAlert('Невозможно обновить правило без id', 'error');
       return;
     }
-
     this.ruleService.updateRule(rule).subscribe({
-      next: (updatedRule) => {
-        if (updatedRule) {
-          this.showAlert('Правило успешно обновлено', 'success');
-        } else {
-          this.showAlert('Правило успешно обновлено', 'success');
-          //this.showAlert('Правило обновлено, но сервер не вернул данные', 'success');
-        }
+      next: () => {
+        this.showAlert('Правило успешно обновлено', 'success');
         this.loadRules();
       },
       error: (err) => {
@@ -105,6 +90,12 @@ export class RuleManagementComponent implements OnInit {
     });
   }
 
+  clearNew(): void {
+    this.newRule = this.createEmptyRule();
+    this.newRuleFullNames = '';
+    this.newRuleSubstrings = '';
+  }
+
   private createEmptyRule(): Rule {
     return {
       id: 0,
@@ -118,18 +109,9 @@ export class RuleManagementComponent implements OnInit {
     };
   }
 
-  private resetNewRule(): void {
-    this.newRule = this.createEmptyRule();
-    this.newRuleFullNames = '';
-    this.newRuleSubstrings = '';
-  }
-
   showAlert(message: string, type: 'success' | 'error'): void {
     const alert: Alert = { message, type };
     this.alerts.push(alert);
-
-    setTimeout(() => {
-      this.alerts = this.alerts.filter(a => a !== alert);
-    }, 4000);
+    setTimeout(() => { this.alerts = this.alerts.filter(a => a !== alert); }, 4000);
   }
 }

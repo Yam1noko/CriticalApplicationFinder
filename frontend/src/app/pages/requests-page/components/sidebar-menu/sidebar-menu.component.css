@@ -1,43 +1,95 @@
-.sidebar {
-  background-color: #f9fafb;
-  border-right: 1px solid #d1d5db;
-  overflow: hidden;
-  width: 60px;
-  transition: width 0.3s ease;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
+:host {
+  --sidebar-width-collapsed: 72px;
+  --sidebar-width-expanded: 220px;
+  --sidebar-bg: #f9fafb;
+  --sidebar-border: #d1d5db;
+  --sidebar-hover-bg: #e5e7eb;
+  --text: #1f2937;
+  --icon: #111827;
+  --icon-hover: #2563eb;
+  --z-flyout: 950;
 }
 
-  .sidebar.expanded {
-    width: 220px;
-  }
+/* Контейнер узкой панели */
+.sidebar-hover {
+  position: relative;
+  width: var(--sidebar-width-collapsed);
+  height: 100%;
+  overflow: visible; 
+  z-index: var(--z-flyout);
+  pointer-events: auto; /* на всякий случай */
+}
+
+/* Летающая панель, которая расширяется при наведении */
+.sidebar-flyout {
+  position: absolute;
+  inset: 0 auto 0 0; /* top:0; left:0; height:100% */
+  width: var(--sidebar-width-expanded);
+  height: 100%;
+  background-color: var(--sidebar-bg);
+  border-right: 1px solid var(--sidebar-border);
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.12);
+  /* показываем только 72px (иконки), остальное скрыто */
+  clip-path: inset(0 calc(var(--sidebar-width-expanded) - var(--sidebar-width-collapsed)) 0 0);
+  transition: clip-path 0.2s ease-in-out;
+  /* поверх основного контента */
+  z-index: var(--z-flyout);
+}
+
+/* При наведении на контейнер — раскрываем подписи поверх */
+.sidebar-hover:hover .sidebar-flyout {
+  clip-path: inset(0 0 0 0);
+}
 
 .sidebar-nav {
   display: flex;
   flex-direction: column;
   padding: 8px;
+  height: 100%;
+  gap: 4px;
 }
 
   .sidebar-nav button {
     display: flex;
     align-items: center;
+    gap: 10px;
     border: none;
     background: none;
     width: 100%;
     text-align: left;
     padding: 12px;
     cursor: pointer;
-    border-radius: 4px;
-    transition: background-color 0.2s;
-    font-size: 16px;
+    border-radius: 6px;
+    transition: background-color 0.15s ease;
+    color: var(--text);
   }
 
     .sidebar-nav button:hover {
-      background-color: #e5e7eb;
+      background-color: var(--sidebar-hover-bg);
     }
 
-    .sidebar-nav button span {
-      margin-left: 8px;
-      white-space: nowrap;
+    /* Иконки — всегда видны */
+    .sidebar-nav button .icon {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+      color: var(--icon);
+      fill: currentColor;
+      transition: color 0.15s ease;
     }
+
+    .sidebar-nav button:hover .icon {
+      color: var(--icon-hover);
+    }
+
+/* Подписи скрыты до hover (видны только иконки) */
+.item-label {
+  display: none;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* При hover контейнера показываем подписи */
+.sidebar-hover:hover .item-label {
+  display: inline;
+}

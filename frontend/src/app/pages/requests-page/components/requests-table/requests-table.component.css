@@ -1,3 +1,10 @@
+/* Контейнеры до table-area растягиваем по высоте */
+.page-layout,
+.content-area,
+.main-with-filter {
+  height: 100%;
+}
+
 .page-layout {
   display: flex;
   max-width: 100%;
@@ -9,19 +16,240 @@
 
 .main-with-filter {
   display: flex;
-  height: 100%;
   position: relative;
 }
 
+/* ЕДИНСТВЕННЫЙ скролл — в таблице */
 .table-area {
   flex: 1;
-  overflow-y: auto;
-  max-height: calc(100vh - 100px);
+  height: 100%;
+  overflow: auto;
+  background-color: #fff;
+  width: 100%;
+  box-sizing: border-box;
   position: relative;
   transition: margin 0.3s ease;
-  background-color: #ffffff;
 }
 
+/* Панель управления */
+.table-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #f9fafb;
+  border-bottom: 1px solid #d1d5db;
+  flex-wrap: wrap;
+  font-size: 15px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+  .table-controls .left-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .table-controls button {
+    padding: 8px 14px;
+    border: 1px solid #d1d5db;
+    background-color: #fff;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: background-color 0.2s, border-color 0.2s;
+    font-size: 15px;
+  }
+
+    .table-controls button:hover {
+      background-color: #f3f4f6;
+      border-color: #cfd8e3;
+    }
+
+  .table-controls label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 15px;
+  }
+
+  .table-controls input[type="checkbox"] {
+    margin-right: 8px;
+    transform: scale(1.1);
+  }
+
+/* Пагинация */
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+}
+
+  .pagination-controls button {
+    padding: 6px 10px;
+    border: 1px solid #d1d5db;
+    background: #fff;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: background-color 0.2s, border-color 0.2s;
+    font-size: 15px;
+  }
+
+    .pagination-controls button:disabled {
+      opacity: .55;
+      cursor: default;
+    }
+
+    .pagination-controls button:hover:not(:disabled) {
+      background: #f3f4f6;
+      border-color: #cfd8e3;
+    }
+
+  .pagination-controls span {
+    padding: 4px 10px;
+    border-radius: 10px;
+    background: #eef2ff;
+    border: 1px solid #e5e7eb;
+    line-height: 1.2;
+  }
+
+/* Стики */
+.sticky-controls {
+  position: sticky;
+  top: 0;
+  background-color: #f9fafb;
+  padding: 8px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #d1d5db;
+  z-index: 10;
+}
+
+/* Таблица — на всю ширину; «текст заявки» тянется */
+.table-area table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  border: 1px solid #d1d5db;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  overflow: hidden;
+}
+
+.table-area th, .table-area td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid #d1d5db;
+  border-right: 1px solid #e5e7eb;
+  font-size: 14px;
+}
+
+  .table-area th:last-child, .table-area td:last-child {
+    border-right: none;
+  }
+
+.table-area th {
+  background: #f3f4f6;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  cursor: pointer;
+  color: #374151;
+  border-bottom: 2px solid #d1d5db;
+}
+
+.table-area tr:nth-child(even) td {
+  background: #fafafa;
+}
+
+.table-area tr.critical td {
+  background: #ffeaea !important;
+}
+
+.table-area tr:hover td {
+  background: #f0f9ff;
+}
+
+.text-cell {
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+  overflow: hidden;
+}
+
+/* Распределение ширины: все колонки узкие, текст заявки — гибкая */
+.table-area th:nth-child(1), .table-area td:nth-child(1) {
+  width: 120px;
+  white-space: nowrap;
+}
+
+/* «Заявитель» — переносы, чтобы не вылезал */
+.table-area th:nth-child(2), .table-area td:nth-child(2) {
+  width: 180px;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* Текст заявки — авто */
+.table-area th:nth-child(3), .table-area td:nth-child(3) {
+  width: auto;
+}
+
+.table-area th:nth-child(4), .table-area td:nth-child(4) {
+  width: 140px;
+  white-space: nowrap;
+}
+
+.table-area th:nth-child(5), .table-area td:nth-child(5) {
+  width: 160px;
+  white-space: nowrap;
+}
+
+/* Разворачивание описания */
+.description-wrapper {
+  overflow: hidden;
+  transition: max-height .3s ease;
+}
+
+  .description-wrapper.collapsed {
+    max-height: 300px;
+  }
+
+.description-content {
+  padding: 4px 0;
+}
+
+.toggle-link {
+  color: #2563eb;
+  cursor: pointer;
+  text-decoration: underline;
+  margin-left: 8px;
+}
+
+/* Заголовок темы + разделитель + тело */
+.request-title {
+  font-weight: 600;
+  padding-bottom: 4px;
+}
+
+.request-divider {
+  border: none;
+  border-bottom: 1px solid #d1d5db;
+  margin: 4px 0 6px 0;
+}
+
+.request-body {
+  font-weight: 400;
+  color: #333;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* Alerts */
 .alerts-container {
   position: fixed;
   bottom: 16px;
@@ -38,193 +266,19 @@
   margin-top: 8px;
   padding: 12px 20px;
   border-radius: 6px;
-  color: #ffffff;
+  color: #fff;
   font-size: 14px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-  animation: fadeIn 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,.2);
+  animation: fadeIn .3s ease;
 }
 
   .alert.success {
-    background-color: #4CAF50;
+    background: #4CAF50;
   }
 
   .alert.error {
-    background-color: #F44336;
+    background: #F44336;
   }
-
-.table-controls {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px;
-  background-color: #f9fafb;
-  border-bottom: 1px solid #d1d5db;
-  flex-wrap: wrap;
-}
-
-  .table-controls .left-controls {
-    display: flex;
-    align-items: center;
-  }
-
-  .table-controls button {
-    padding: 6px 12px;
-    margin-right: 16px;
-    border: 1px solid #d1d5db;
-    background-color: #ffffff;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: background-color 0.2s;
-  }
-
-    .table-controls button:hover {
-      background-color: #f3f4f6;
-    }
-
-  .table-controls label {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    font-size: 14px;
-  }
-
-  .table-controls input[type="checkbox"] {
-    margin-right: 6px;
-  }
-
-.pagination-controls {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-  .pagination-controls button {
-    padding: 4px 8px;
-    border: 1px solid #d1d5db;
-    background-color: #ffffff;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: background-color 0.2s;
-  }
-
-    .pagination-controls button:disabled {
-      opacity: 0.5;
-      cursor: default;
-    }
-
-    .pagination-controls button:hover:not(:disabled) {
-      background-color: #f3f4f6;
-    }
-
-.table-area table {
-  width: 100%;
-  border-collapse: collapse;
-  border: 1px solid #ccc;
-}
-
-.table-area tr.critical {
-  background-color: #ffe5e5;
-}
-
-.table-area th,
-.table-area td {
-  border: 1px solid #ccc;
-  padding: 8px;
-  text-align: left;
-}
-
-.table-area th {
-  cursor: pointer;
-  background-color: #f3f4f6;
-}
-
-.text-cell {
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  overflow: hidden;
-}
-
-.table-area th:nth-child(3),
-.table-area td:nth-child(3) {
-  max-width: 800px;
-  word-wrap: break-word;
-}
-.filter-area {
-  display: flex;
-  flex-direction: column;
-  border-left: 1px solid #d1d5db;
-  background-color: #ffffff;
-  overflow: hidden;
-  transition: width 0.3s ease;
-  box-sizing: border-box;
-}
-
-  .filter-area.open {
-    width: 330px;
-  }
-
-.toggle-filter {
-  width: 100%;
-  padding: 8px;
-  background-color: #f9fafb;
-  border: none;
-  border-bottom: 1px solid #d1d5db;
-  cursor: pointer;
-  font-size: 18px;
-  transition: background-color 0.3s ease;
-}
-
-  .toggle-filter:hover {
-    background-color: #f3f4f6;
-  }
-
-.filter-content {
-  padding: 8px;
-  overflow-y: auto;
-  flex: 1;
-}
-
-.loading-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(255, 255, 255, 0.95);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 10;
-}
-
-.loading-box {
-  padding: 20px 40px;
-  background-color: #ffffff;
-  border: 2px solid #ccc;
-  border-radius: 8px;
-  font-size: 16px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-}
-
-.toggle-link {
-  color: #2563eb;
-  cursor: pointer;
-  text-decoration: underline;
-  margin-left: 8px;
-}
-
-.description-wrapper {
-  overflow: hidden;
-  transition: max-height 0.3s ease;
-}
-
-  .description-wrapper.collapsed {
-    max-height: 300px;
-  }
-
-.description-content {
-  padding: 4px 0;
-}
 
 @keyframes fadeIn {
   from {
@@ -238,18 +292,158 @@
   }
 }
 
-.sticky-controls {
-  position: sticky;
-  top: 0;
-  background-color: #f9fafb;
-  padding: 8px 12px;
+/* Loading */
+.loading-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,.95);
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  border-bottom: 1px solid #d1d5db;
   z-index: 10;
 }
 
-.sticky-controls button {
-  cursor: pointer;
+.loading-box {
+  padding: 20px 40px;
+  background: #fff;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.2);
 }
+
+/* Период/меню/попап */
+.period-pill-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.period-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: #dbe8ff;
+  color: #1f3b7a;
+  border: 1px solid #c7d6ff;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+  .period-pill .check {
+    margin-right: 4px;
+  }
+
+  .period-pill .caret {
+    margin-left: 4px;
+  }
+
+.applied-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  font-size: 13px;
+  background: #e6f0ff;
+  color: #1f3b7a;
+  border: 1px solid #c7d6ff;
+  border-radius: 999px;
+}
+
+  .applied-chip .chip-x {
+    border: none;
+    background: transparent;
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
+    color: inherit;
+    padding: 0 2px;
+  }
+
+.period-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0,0,0,.12);
+  list-style: none;
+  padding: 6px 0;
+  margin: 0;
+  z-index: 50;
+  min-width: 220px;
+}
+
+  .period-menu li {
+    padding: 8px 12px;
+    cursor: pointer;
+  }
+
+    .period-menu li:hover {
+      background: #f3f4f6;
+    }
+
+  .period-menu .divider {
+    height: 1px;
+    background: #e5e7eb;
+    margin: 4px 0;
+    cursor: default;
+  }
+
+.custom-range-popover {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.14);
+  padding: 12px;
+  z-index: 60;
+  width: 320px;
+}
+
+  .custom-range-popover .crp-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .custom-range-popover input[type="date"] {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+  }
+
+  .custom-range-popover .crp-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  .custom-range-popover .btn-secondary,
+  .custom-range-popover .btn-primary {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    background: #fff;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  .custom-range-popover .btn-primary {
+    background: #e8f0ff;
+    border-color: #c7d6ff;
+  }
+
+    .custom-range-popover .btn-primary:disabled {
+      opacity: .6;
+      cursor: default;
+    }
