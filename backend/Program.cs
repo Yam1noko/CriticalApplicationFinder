@@ -42,17 +42,8 @@ builder.Services.AddAutoMapper(cfg =>
 builder.Services.AddScoped<IExternalRequestRepository, EFExternalRequestRepository>();
 builder.Services.AddScoped<IRequestService, RequestService>();
 
-
-builder.Services.AddSingleton<EmailSender>(sp =>
-{
-    var settings = sp.GetRequiredService<IOptions<EmailOptions>>().Value;
-    return new EmailSender(
-        host: settings.Host,
-        port: settings.Port,
-        from: settings.From,
-        username: settings.Username,
-        password: settings.Password);
-});
+builder.Services.Configure<EmailOptions>(builder.Configuration.GetSection("EmailSettings"));
+builder.Services.AddSingleton<EmailSender>();
 
 builder.Services.AddHostedService<MonitoringService>();
 
