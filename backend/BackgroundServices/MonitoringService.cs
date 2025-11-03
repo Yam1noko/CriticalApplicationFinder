@@ -2,8 +2,11 @@
 using backend.Email;
 using backend.Models.External;
 using backend.Models.Internal;
+using backend.Options;
 using backend.Repositories;
 using backend.Services;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace backend.BackgroundServices
 {
@@ -11,12 +14,15 @@ namespace backend.BackgroundServices
     {
         private readonly ILogger<MonitoringService> _logger;
         private readonly IServiceProvider _serviceProvider;
+        private readonly MonitoringOptions _options;
         public MonitoringService(
             IServiceProvider serviceProvider,
-            ILogger<MonitoringService> logger)
+            ILogger<MonitoringService> logger,
+            IOptions<MonitoringOptions> options)
         {
             _serviceProvider = serviceProvider;
             _logger = logger;
+            _options = options.Value;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -33,16 +39,16 @@ namespace backend.BackgroundServices
                     var externalRepo = scope.ServiceProvider.GetRequiredService<IExternalRequestRepository>();
                     var mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
                     var ruleService = scope.ServiceProvider.GetRequiredService<IRuleService>();
-                    var emailSender = scope.ServiceProvider.GetRequiredService<EmailSender>();
+                    var notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
 
-                    await CheckAndSync(internalRepo, externalRepo, mapper, ruleService, emailSender);
+                    await CheckAndSync(internalRepo, externalRepo, mapper, ruleService, notificationService);
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Error in MonitoringService");
                 }
 
-                await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+                await Task.Delay(TimeSpan.FromMinutes(_options.IntervalMinutes), stoppingToken);
             }
 
             _logger.LogInformation("MonitoringService stopped");
@@ -51,7 +57,7 @@ namespace backend.BackgroundServices
         private async Task CheckAndSync(
             IRequestRepository internalRepo,
             IExternalRequestRepository externalRepo,
-            IMapper mapper, IRuleService ruleService, EmailSender emailSender)
+            IMapper mapper, IRuleService ruleService, INotificationService notificationService)
         {
             var external = (await externalRepo.GetAllAsync()).ToList();
             var internalList = (await internalRepo.GetAllAsync()).ToList();
@@ -67,7 +73,14 @@ namespace backend.BackgroundServices
                     newInternal = await ruleService.IsRequestCritical(newInternal);
                     if (newInternal.isCritical == true && _options.EmailEnabled == true)
                     {
-                        //денис
+                        try
+                        {
+                            await notificationService.SendEmail(newInternal);
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogWarning(ex, "Ошибка при отправке email");
+                        }
                     }
                     await internalRepo.Add(newInternal);
                     hasChanges = true;

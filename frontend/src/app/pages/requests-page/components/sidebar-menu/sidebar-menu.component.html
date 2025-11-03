@@ -1,0 +1,12 @@
+<div class="sidebar" [class.expanded]="isExpanded">
+  <nav class="sidebar-nav">
+    <button (click)="select('Rule')">
+      📖
+      <span *ngIf="isExpanded">Правила и условия</span>
+    </button>
+    <button (click)="select('Notifications')">
+      📘
+      <span *ngIf="isExpanded">Уведомления</span>
+    </button>
+  </nav>
+</div>

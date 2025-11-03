@@ -1,6 +1,8 @@
-﻿using backend.Repositories;
-using Microsoft.AspNetCore.Mvc;
+﻿using backend.Options;
+using backend.Repositories;
 using backend.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 [ApiController]
 [Route("api/requests")]
@@ -8,11 +10,12 @@ public class RequestController : ControllerBase
 {
     private readonly IRequestRepository _repo;
     private readonly IRequestService _service;
-
-    public RequestController(IRequestRepository repo, IRequestService service)
+    private readonly RequestOptions _options;
+    public RequestController(IRequestRepository repo, IRequestService service, IOptions<RequestOptions> options)
     {
         _repo = repo;
         _service = service;
+        _options = options.Value;
     }
 
     [HttpGet("range")]
@@ -29,8 +32,8 @@ public class RequestController : ControllerBase
     [HttpGet("getFirst")]
     public async Task<IActionResult> GetFirst()
     {
-        DateTime from = new DateTime(2000, 1, 1);
-        DateTime to = new DateTime(3000, 1, 1);
+        var from = _options.FirstRequestFrom;
+        var to = _options.FirstRequestTo;
         var list = (await _service.GetRequestsInRange(from, to)).FirstOrDefault();
         return Ok(list);
     }

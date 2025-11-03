@@ -1,0 +1,138 @@
+.notification-settings {
+  font-family: Arial, sans-serif;
+  padding: 16px;
+  background-color: #ffffff;
+}
+
+  .notification-settings h3 {
+    margin-top: 0;
+    border-bottom: 1px solid #d1d5db;
+    padding-bottom: 8px;
+  }
+
+.section {
+  border: 1px solid #d1d5db;
+  padding: 12px;
+  margin-bottom: 16px;
+  background-color: #f9fafb;
+  border-radius: 4px;
+}
+
+  .section h4 {
+    margin-top: 0;
+    margin-bottom: 8px;
+  }
+
+.template-hints {
+  font-size: 14px;
+  margin-bottom: 8px;
+  color: #444;
+}
+
+  .template-hints .hint {
+    background-color: #e6f4ea;
+    color: #2e7d32;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-family: monospace;
+    margin-right: 4px;
+  }
+
+.email-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0 0 8px 0;
+  max-height: 240px;
+  overflow-y: auto;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  background-color: #ffffff;
+}
+
+  .email-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+    .email-list li:last-child {
+      border-bottom: none;
+    }
+
+  .email-list button {
+    padding: 4px 8px;
+    border: 1px solid #d1d5db;
+    background-color: #f9fafb;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+
+.section input,
+.section textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 6px;
+  margin-top: 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  background-color: #ffffff;
+}
+
+.section button {
+  margin-top: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+  border: 1px solid #d1d5db;
+  background-color: #ffffff;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+  .section button:hover {
+    background-color: #e5e7eb;
+  }
+
+
+.alerts-container {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 90%;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.alert {
+  margin-top: 8px;
+  padding: 12px 20px;
+  border-radius: 6px;
+  color: #ffffff;
+  font-size: 14px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  animation: fadeIn 0.3s ease;
+}
+
+  .alert.success {
+    background-color: #4CAF50;
+  }
+
+  .alert.error {
+    background-color: #F44336;
+  }
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

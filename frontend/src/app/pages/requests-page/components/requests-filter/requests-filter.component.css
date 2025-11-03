@@ -1,0 +1,126 @@
+.filter-container {
+  width: 100%;
+  height: 100%;
+  padding: 16px;
+  box-sizing: border-box;
+  background-color: #f9fafb;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+.filter-title {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.filter-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 8px;
+  font-family: Arial, sans-serif;
+  table-layout: fixed;
+}
+
+.filter-table td {
+  padding: 4px 0;
+  vertical-align: top;
+  word-break: break-word;
+}
+
+.filter-container input[type="text"],
+.filter-container input[type="datetime-local"] {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  box-sizing: border-box;
+  background-color: #ffffff;
+  font-size: 14px;
+}
+
+.filter-container input[type="checkbox"] {
+  transform: scale(1.2);
+}
+
+.filter-container button {
+  padding: 8px 12px;
+  cursor: pointer;
+  border: 1px solid #d1d5db;
+  background-color: #ffffff;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+  font-size: 14px;
+}
+
+.filter-container button:hover {
+  background-color: #f3f4f6;
+}
+
+.requester-input {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  width: 100%;
+}
+
+.requester-input input {
+  flex: 1 1 auto;
+}
+
+.add-button {
+  width: 36px;
+  padding: 0;
+  font-size: 20px;
+  font-weight: bold;
+  border-radius: 6px;
+  background-color: #e0f2fe;
+  border: 1px solid #bae6fd;
+}
+
+.add-button:hover {
+  background-color: #bae6fd;
+}
+
+.selected-requesters {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.selected-item {
+  background-color: #dbeafe;
+  padding: 4px 8px;
+  border-radius: 16px;
+  display: inline-flex;
+  align-items: center;
+  font-size: 13px;
+}
+
+.selected-item button {
+  margin-left: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  color: #1e40af;
+}
+
+.filter-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 12px;
+}
+
+.filter-table td:first-child {
+  width: 100px; 
+}
+
+.filter-table td:last-child {
+  width: auto;
+}

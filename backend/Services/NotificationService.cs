@@ -1,10 +1,14 @@
 ﻿namespace backend.Services
 {
     using backend.DataTransferObject;
-    using backend.Models.Internal;
-    using backend.Repositories;
     using backend.Email;
+    using backend.Models.Internal;
+    using backend.Options;
+    using backend.Repositories;
+    using Microsoft.Extensions.Options;
     using Scriban;
+
+
 
     public class NotificationService : INotificationService
     {
@@ -14,14 +18,15 @@
 
         private NotificationDTO _notificationDTO;
 
-        public NotificationService(INotificationRepository repo, EmailSender sender)
+        public NotificationService(INotificationRepository repo, EmailSender sender, IOptions<NotificationOptions> options)
         {
             _Repo = repo;
             _Sender = sender;
+            var opts = options.Value;
             _notificationDTO = new NotificationDTO
             {
-                Template = "Отсутствует",
-                Emails = Array.Empty<string>()
+                Template = opts.DefaultTemplate,
+                Emails = opts.DefaultEmails
             };
         }
 
@@ -66,13 +71,13 @@
             if (await _Repo.ExistTemplate())
             {
                 _notificationDTO.Template = template;
-                _Repo.UpdateTemplate(templ);
+                await _Repo.UpdateTemplate(templ);
                 return true;
             }
             else
             {
                 _notificationDTO.Template = template;
-                _Repo.AddTemplate(templ);
+                await _Repo.AddTemplate(templ);
                 return true;
             }
         }
