@@ -36,10 +36,15 @@ builder.Services.AddSingleton(new EmailSender(
 builder.Services.AddScoped<IExternalRequestRepository, EFExternalRequestRepository>();
 builder.Services.AddScoped<IRequestService, RequestService>();
 
+<<<<<<< Updated upstream
 builder.Services.AddAutoMapper(cfg =>
 {
     cfg.AddProfile<MappingProfile>();
 });
+=======
+builder.Services.Configure<EmailOptions>(builder.Configuration.GetSection("EmailSettings"));
+builder.Services.AddSingleton<EmailSender>();
+>>>>>>> Stashed changes
 
 builder.Services.AddSingleton(new EmailSender(
     host: "sandbox.smtp.mailtrap.io",
