@@ -71,7 +71,7 @@ namespace backend.BackgroundServices
                 {
                     var newInternal = mapper.Map<Request>(externalReq);
                     newInternal = await ruleService.IsRequestCritical(newInternal);
-                    if (newInternal.isCritical == true)
+                    if (newInternal.isCritical == true && _options.EmailEnabled == true)
                     {
                         try
                         {
