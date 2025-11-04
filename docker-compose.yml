@@ -35,14 +35,14 @@ services:
       ConnectionStrings__InternalDb: Host=postgres;Port=5432;Database=internal;Username=postgres;Password=postgres
       ConnectionStrings__ExternalDb: Host=postgres;Port=5432;Database=external;Username=postgres;Password=postgres
 
-frontend:
-    build:
-      context: .
-      dockerfile: frontend/Dockerfile
-    ports:
-      - "4200:80"
-    depends_on:
-      - backend
+  frontend:
+      build:
+        context: .
+        dockerfile: frontend/Dockerfile
+      ports:
+        - "4200:80"
+      depends_on:
+        - backend
 
 volumes:
   pg_data:
