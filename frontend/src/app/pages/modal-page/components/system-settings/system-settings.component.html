@@ -1,138 +1,207 @@
 <div class="settings">
-  <div class="toolbar" style="display:flex;justify-content:space-between;gap:12px;align-items:center;">
-    <div class="left" style="display:flex;gap:8px;align-items:center;">
-      <button class="primary" (click)="save()">Сохранить</button>
-      <button class="secondary" (click)="resetToDefault()">Сбросить</button>
+  <!-- Верхняя панель инструментов -->
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <button class="primary" (click)="saveToServer()" [disabled]="saving || loading">
+        Сохранить
+      </button>
+      <button class="secondary" (click)="resetToDefault()" [disabled]="saving || loading">
+        Сбросить
+      </button>
     </div>
 
-    <div class="right" style="display:flex;align-items:center;gap:8px;">
-      <button type="button" class="mail-toggle" (click)="toggleEmailSending()" title="Вкл/Выкл отправку писем"
-              style="display:inline-flex;align-items:center;gap:8px;border:1px solid #d1d5db;background:#fff;border-radius:18px;padding:6px 10px;cursor:pointer;">
-        Отправка писем
-        <span class="dot"
-              [style.display]="'inline-block'"
-              [style.width.px]="10"
-              [style.height.px]="10"
-              [style.borderRadius.%]="50"
-              [style.backgroundColor]="emailSendingEnabled ? '#22c55e' : '#ef4444'">
-        </span>
-      </button>
+    <!-- Тумблер "Отправка писем" с индикатором -->
+    <button class="mail-toggle"
+            type="button"
+            (click)="settings.Monitoring.EmailEnabled = !settings.Monitoring.EmailEnabled">
+      Отправка писем
+      <span class="dot" [class.on]="settings.Monitoring.EmailEnabled" [class.off]="!settings.Monitoring.EmailEnabled"></span>
+    </button>
+  </div>
+
+  <!-- Alerts -->
+  <div class="alerts-container">
+    <div *ngFor="let alert of alerts"
+         class="alert"
+         [ngClass]="{'success': alert.type === 'success', 'error': alert.type === 'error'}">
+      {{ alert.message }}
     </div>
   </div>
 
-  <!-- Logging -->
-  <section class="card">
-    <header (click)="toggle('logging')">
-      <h3>Логирование</h3><span>{{ sectionsOpen.logging ? '−' : '+' }}</span>
-    </header>
-    <div class="body" *ngIf="sectionsOpen.logging">
-      <div class="grid-2">
-        <label>
-          <span>LogLevel: Default</span>
-          <input [(ngModel)]="settings.Logging.LogLevel.Default" type="text">
-        </label>
-        <label>
-          <span>LogLevel: Microsoft.AspNetCore</span>
-          <input [(ngModel)]="settings.Logging.LogLevel.MicrosoftAspNetCore" type="text">
-        </label>
-      </div>
-    </div>
-  </section>
+  <!-- ЛОАДЕР -->
+  <div class="loading" *ngIf="loading">
+    Загрузка настроек...
+  </div>
 
-  <!-- ConnectionStrings -->
-  <section class="card">
-    <header (click)="toggle('conn')">
-      <h3>Строки подключения</h3><span>{{ sectionsOpen.conn ? '−' : '+' }}</span>
-    </header>
-    <div class="body" *ngIf="sectionsOpen.conn">
-      <label>
-        <span>InternalDb</span>
-        <input [(ngModel)]="settings.ConnectionStrings.InternalDb" type="text">
-      </label>
-      <label>
-        <span>ExternalDb</span>
-        <input [(ngModel)]="settings.ConnectionStrings.ExternalDb" type="text">
-      </label>
-    </div>
-  </section>
-
-  <!-- Email -->
-  <section class="card">
-    <header (click)="toggle('email')">
-      <h3>Email</h3><span>{{ sectionsOpen.email ? '−' : '+' }}</span>
-    </header>
-    <div class="body" *ngIf="sectionsOpen.email">
-      <div class="grid-2">
-        <label><span>Host</span><input [(ngModel)]="settings.EmailSettings.Host" type="text"></label>
-        <label><span>Port</span><input [(ngModel)]="settings.EmailSettings.Port" type="number" min="1"></label>
-      </div>
-      <div class="grid-3">
-        <label><span>From</span><input [(ngModel)]="settings.EmailSettings.From" type="email"></label>
-        <label><span>Username</span><input [(ngModel)]="settings.EmailSettings.Username" type="text"></label>
-        <label><span>Password</span><input [(ngModel)]="settings.EmailSettings.Password" type="password"></label>
-      </div>
-
-      <div class="emails">
-        <span class="label">DefaultEmails</span>
-        <div class="emails-list">
-          <span class="chip" *ngFor="let e of settings.Notification.DefaultEmails; let i = index">
-            {{ e }} <button (click)="removeEmail(i)" type="button">×</button>
-          </span>
-        </div>
-        <div class="email-adder">
-          <input [(ngModel)]="newEmail" type="email" placeholder="email@example.com" (keyup.enter)="addEmail()">
-          <button (click)="addEmail()" type="button">Добавить</button>
+  <ng-container *ngIf="!loading">
+    <!-- Logging -->
+    <section class="card">
+      <header (click)="toggle('logging')">
+        <h3>Логирование</h3>
+        <span class="chev">{{ sectionsOpen.logging ? '−' : '+' }}</span>
+      </header>
+      <div class="body" *ngIf="sectionsOpen.logging">
+        <div class="grid-2">
+          <label>
+            <span>LogLevel: Default</span>
+            <input [(ngModel)]="settings.Logging.LogLevel.Default" type="text">
+          </label>
+          <label>
+            <span>LogLevel: Microsoft.AspNetCore</span>
+            <input [(ngModel)]="settings.Logging.LogLevel.MicrosoftAspNetCore" type="text">
+          </label>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Host -->
-  <section class="card">
-    <header (click)="toggle('host')">
-      <h3>Хост</h3><span>{{ sectionsOpen.host ? '−' : '+' }}</span>
-    </header>
-    <div class="body" *ngIf="sectionsOpen.host">
-      <label><span>Url</span><input [(ngModel)]="settings.Host.Url" type="text"></label>
-    </div>
-  </section>
-
-  <!-- Monitoring -->
-  <section class="card">
-    <header (click)="toggle('monitoring')">
-      <h3>Мониторинг</h3><span>{{ sectionsOpen.monitoring ? '−' : '+' }}</span>
-    </header>
-    <div class="body" *ngIf="sectionsOpen.monitoring">
-      <label><span>IntervalMinutes</span><input [(ngModel)]="settings.Monitoring.IntervalMinutes" type="number" min="1"></label>
-    </div>
-  </section>
-
-  <!-- Request -->
-  <section class="card">
-    <header (click)="toggle('request')">
-      <h3>Диапазон запросов по умолчанию</h3><span>{{ sectionsOpen.request ? '−' : '+' }}</span>
-    </header>
-    <div class="body" *ngIf="sectionsOpen.request">
-      <div class="grid-2">
-        <label><span>FirstRequestFrom (ISO)</span><input [(ngModel)]="settings.Request.FirstRequestFrom" type="text" placeholder="YYYY-MM-DDTHH:mm:ss"></label>
-        <label><span>FirstRequestTo (ISO)</span><input [(ngModel)]="settings.Request.FirstRequestTo" type="text" placeholder="YYYY-MM-DDTHH:mm:ss"></label>
+    <!-- ConnectionStrings -->
+    <section class="card">
+      <header (click)="toggle('conn')">
+        <h3>Строки подключения</h3>
+        <span class="chev">{{ sectionsOpen.conn ? '−' : '+' }}</span>
+      </header>
+      <div class="body" *ngIf="sectionsOpen.conn">
+        <label>
+          <span>InternalDb</span>
+          <input [(ngModel)]="settings.ConnectionStrings.InternalDb" type="text">
+        </label>
+        <label>
+          <span>ExternalDb</span>
+          <input [(ngModel)]="settings.ConnectionStrings.ExternalDb" type="text">
+        </label>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Notification defaults -->
-  <section class="card">
-    <header (click)="toggle('notification')">
-      <h3>Уведомления (по умолчанию)</h3><span>{{ sectionsOpen.notification ? '−' : '+' }}</span>
-    </header>
-    <div class="body" *ngIf="sectionsOpen.notification">
-      <label><span>DefaultTemplate</span><input [(ngModel)]="settings.Notification.DefaultTemplate" type="text"></label>
-    </div>
-  </section>
+    <!-- Email -->
+    <section class="card">
+      <header (click)="toggle('email')">
+        <h3>Email</h3>
+        <span class="chev">{{ sectionsOpen.email ? '−' : '+' }}</span>
+      </header>
+      <div class="body" *ngIf="sectionsOpen.email">
+        <div class="grid-2">
+          <label>
+            <span>Host</span>
+            <input [(ngModel)]="settings.EmailSettings.Host" type="text">
+          </label>
+          <label>
+            <span>Port</span>
+            <input [(ngModel)]="settings.EmailSettings.Port" type="number" min="1">
+          </label>
+        </div>
 
-  <!-- JSON -->
-  <section class="card">
-    <header><h3>Текущий JSON</h3></header>
-    <div class="body"><pre class="json">{{ jsonPreview }}</pre></div>
-  </section>
+        <div class="grid-3">
+          <label>
+            <span>From</span>
+            <input [(ngModel)]="settings.EmailSettings.From" type="email">
+          </label>
+          <label>
+            <span>Username</span>
+            <input [(ngModel)]="settings.EmailSettings.Username" type="text">
+          </label>
+          <label>
+            <span>Password</span>
+            <input [(ngModel)]="settings.EmailSettings.Password" type="password">
+          </label>
+        </div>
+
+        <div class="emails">
+          <span class="label">DefaultEmails</span>
+          <div class="emails-list">
+            <span class="chip" *ngFor="let e of settings.Notification.DefaultEmails; let i = index">
+              {{ e }}
+              <button (click)="removeEmail(i)" type="button" aria-label="Удалить">×</button>
+            </span>
+          </div>
+          <div class="email-adder">
+            <input [(ngModel)]="newEmail"
+                   type="email"
+                   placeholder="email@example.com"
+                   (keyup.enter)="addEmail()">
+            <button (click)="addEmail()" type="button">Добавить</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Host -->
+    <section class="card">
+      <header (click)="toggle('host')">
+        <h3>Хост</h3>
+        <span class="chev">{{ sectionsOpen.host ? '−' : '+' }}</span>
+      </header>
+      <div class="body" *ngIf="sectionsOpen.host">
+        <label>
+          <span>Url</span>
+          <input [(ngModel)]="settings.Host.Url" type="text">
+        </label>
+      </div>
+    </section>
+
+    <!-- Monitoring -->
+    <section class="card">
+      <header (click)="toggle('monitoring')">
+        <h3>Мониторинг</h3>
+        <span class="chev">{{ sectionsOpen.monitoring ? '−' : '+' }}</span>
+      </header>
+      <div class="body" *ngIf="sectionsOpen.monitoring">
+        <label>
+          <span>IntervalMinutes</span>
+          <input [(ngModel)]="settings.Monitoring.IntervalMinutes" type="number" min="1">
+        </label>
+        <label class="inline-flag">
+          <input type="checkbox" [(ngModel)]="settings.Monitoring.EmailEnabled">
+          <span>Отправка писем включена</span>
+        </label>
+      </div>
+    </section>
+
+    <!-- Request -->
+    <section class="card">
+      <header (click)="toggle('request')">
+        <h3>Диапазон запросов по умолчанию</h3>
+        <span class="chev">{{ sectionsOpen.request ? '−' : '+' }}</span>
+      </header>
+      <div class="body" *ngIf="sectionsOpen.request">
+        <div class="grid-2">
+          <label>
+            <span>FirstRequestFrom (ISO)</span>
+            <input [(ngModel)]="settings.Request.FirstRequestFrom"
+                   type="text"
+                   placeholder="YYYY-MM-DDTHH:mm:ss">
+          </label>
+          <label>
+            <span>FirstRequestTo (ISO)</span>
+            <input [(ngModel)]="settings.Request.FirstRequestTo"
+                   type="text"
+                   placeholder="YYYY-MM-DDTHH:mm:ss">
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <!-- Notification defaults -->
+    <section class="card">
+      <header (click)="toggle('notification')">
+        <h3>Уведомления (по умолчанию)</h3>
+        <span class="chev">{{ sectionsOpen.notification ? '−' : '+' }}</span>
+      </header>
+      <div class="body" *ngIf="sectionsOpen.notification">
+        <label>
+          <span>DefaultTemplate</span>
+          <input [(ngModel)]="settings.Notification.DefaultTemplate" type="text">
+        </label>
+      </div>
+    </section>
+
+    <!-- JSON превью -->
+    <section class="card">
+      <header>
+        <h3>Текущий JSON</h3>
+      </header>
+      <div class="body">
+        <pre class="json">{{ jsonPreview }}</pre>
+      </div>
+    </section>
+  </ng-container>
 </div>
